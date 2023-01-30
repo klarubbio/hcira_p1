@@ -1,8 +1,38 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "TemplateMap.cpp"
 
 int main()
 {
+    // test out TemplateMap
+    TemplateMap templateMap;
+    vector<Point> testPoints1;
+    testPoints1.push_back(Point(0, 0));
+    testPoints1.push_back(Point(3, 2));
+    testPoints1.push_back(Point(8, 3));
+    testPoints1.push_back(Point(6, 7));
+    testPoints1.push_back(Point(5, 4));
+    templateMap.addTemplate("star", testPoints1);
+
+    vector<Point> testPoints2;
+    testPoints2.push_back(Point(3, 5));
+    testPoints2.push_back(Point(2, 6));
+    testPoints2.push_back(Point(5, 3));
+    testPoints2.push_back(Point(7, 7));
+    testPoints2.push_back(Point(0, 9));
+    templateMap.addTemplate("star", testPoints2);
+
+    vector<Point> testPoints3;
+    testPoints3.push_back(Point(4, 5));
+    testPoints3.push_back(Point(7, 5));
+    testPoints3.push_back(Point(0, 1));
+    testPoints3.push_back(Point(8, 3));
+    testPoints3.push_back(Point(0, 7));
+    templateMap.addTemplate("rectangle", testPoints3);
+
+    templateMap.printTemplateMap();
+    
+    
     int width = 400;
     int height = 400;
     sf::RenderWindow window(sf::VideoMode(width, height), "Canvas");
