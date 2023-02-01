@@ -4,6 +4,7 @@
 
 int main()
 {
+
     // test out TemplateMap
     TemplateMap templateMap;
     vector<Point> testPoints1;
@@ -67,21 +68,7 @@ int main()
     clearBtnSprite.setTexture(clearBtn);
 
     //tracks actual points drawn
-    sf::VertexArray vertices;
-    vertices.setPrimitiveType(sf::Points);
-
-    //visualizes points (makes everything look connected instead of a bunch of small dots)
-    sf::RenderTexture texture;
-    texture.create(width, height);
-    texture.clear(sf::Color::White);
-
-    sf::Sprite sprite;
-    sprite.setTexture(texture.getTexture(), true);
-
-    const float brush_size = 8;
-    sf::CircleShape brush(brush_size, 8);
-    brush.setOrigin(brush_size, brush_size);
-    brush.setFillColor(sf::Color(150, 150, 150));
+    sf::VertexArray vertices(sf::LineStrip);
 
     sf::Vector2f last;
     bool drawing = false;
@@ -102,22 +89,19 @@ int main()
                     clearBtnSprite.setTexture(clearBtnPressed);
                 }
                 else {
+                    //start new stroke
+                    vertices.clear();
                     drawing = true;
                     last = window.mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y });
-                    vertices.append(sf::Vertex(last, sf::Color(0, 0, 0))); //track actual points
-                    brush.setPosition(last);
-                    texture.draw(brush);
-                    texture.display();
+                    vertices.append(sf::Vertex(last, sf::Color(0, 0, 0)));
                     break;
                 }
             }
             //connect additional points of contact
             else if (event.type == sf::Event::MouseMoved && drawing) {
                 const sf::Vector2f next(window.mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y)));
-                vertices.append(sf::Vertex(next, sf::Color(0, 0, 0))); //track actual points
-                brush.setPosition(next);
-                texture.draw(brush);
-                texture.display();
+                vertices.append(sf::Vertex(next, sf::Color(0, 0, 0)));
+                last = next;
                 break;
             }
             else if (event.type == sf::Event::MouseButtonReleased) {
@@ -133,17 +117,15 @@ int main()
                 else if (clearBtnSprite.getTexture() == &clearBtnPressed && event.mouseButton.x >= 300 && event.mouseButton.y >= 350) {
                     clearBtnSprite.setTexture(clearBtn);
                     vertices.clear();
-                    texture.clear(sf::Color::White);
                 }
             }
             
         }
 
         window.clear(sf::Color(255,255,255));
-        window.draw(sprite);
         window.draw(clearBtnSprite);
-        //draw only actual points recorded
-        //window.draw(vertices);
+        //draw only actual points recorded and lines in between
+        window.draw(vertices);
         window.display();
     }
 
