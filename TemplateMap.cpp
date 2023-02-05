@@ -1,4 +1,5 @@
-#include "Point.cpp"
+#include "Point.h"
+#include "TemplateMap.h"
 #include <Map>
 #include <Vector>
 #include <string>
@@ -6,31 +7,30 @@
 
 using namespace std;
 
-class TemplateMap {
-private:
-	map<string, vector<vector<Point>>> templates;
-public:
-	TemplateMap() {}
+TemplateMap::TemplateMap() {
 
-	void addTemplate(string templateName, vector<Point> newTemplate) {
-		templates[templateName].push_back(newTemplate);
-	}
+}
 
-	void clearTemplates(string templateName) {
-		templates[templateName].clear();
-	}
+void TemplateMap::addTemplate(string templateName, vector<Point> newTemplate) {
+	templates[templateName].push_back(newTemplate);
+}
 
-	void printTemplateMap() {
-		for (map<string, vector<vector<Point>>>::iterator it = templates.begin(); it != templates.end(); ++it) {
-			cout << it->first << endl; // name of template
-			// loop through vector of vectors
-			for (vector<Point> templatesVector : it->second) {
-				cout << "  template" << endl;
-				// loop through Points and display as (x,y)
-				for (Point point : templatesVector) {
-					cout << "    (" << point.x << ", " << point.y << ")" << endl;
-				}
+void TemplateMap::clearTemplates(string templateName) {
+	templates[templateName].clear();
+}
+
+void TemplateMap::printTemplateMap() {
+	for (map<string, vector<vector<Point>>>::iterator it = templates.begin(); it != templates.end(); ++it) {
+		cout << it->first << endl; // name of template
+		// loop through vector of vectors
+		for (vector<Point> templatesVector : it->second) {
+			cout << "  template" << endl;
+			// loop through Points and display as (x,y)
+			for (Point point : templatesVector) {
+				cout << "    (" << point.x << ", " << point.y << ")" << endl;
 			}
 		}
 	}
-};
+}
+
+

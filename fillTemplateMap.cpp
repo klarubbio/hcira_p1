@@ -1,4 +1,6 @@
-#include "TemplateMap.cpp"
+
+#include "fillTemplateMap.h"
+#include "TemplateMap.h"
 
 
 void fillTemplateMap(TemplateMap &templateMap) {

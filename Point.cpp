@@ -1,10 +1,7 @@
-class Point {
-public:
-	int x;
-	int y;
+#include "Point.h"
 
-	Point(int xCoord, int yCoord) {
-		x = xCoord;
-		y = yCoord;
-	}
-};
+
+Point::Point(int xCoord, int yCoord) {
+	x = xCoord;
+	y = yCoord;
+}
