@@ -1,7 +1,9 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <vector>
 #include "TemplateMap.h"
 #include "fillTemplateMap.h"
+using namespace std;
 
 
 int main()
@@ -51,7 +53,8 @@ int main()
     clearBtnSprite.setTexture(clearBtn);
 
     //tracks actual points drawn
-    sf::VertexArray vertices(sf::LineStrip);
+    //sf::VertexArray vertices(sf::LineStrip);
+    vector<sf::Vertex> vertices;
 
     sf::Vector2f last;
     bool drawing = false;
@@ -76,14 +79,14 @@ int main()
                     vertices.clear();
                     drawing = true;
                     last = window.mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y });
-                    vertices.append(sf::Vertex(last, sf::Color(0, 0, 0)));
+                    vertices.push_back(sf::Vertex(last, sf::Color(0, 0, 0)));
                     break;
                 }
             }
             //connect additional points of contact
             else if (event.type == sf::Event::MouseMoved && drawing) {
                 const sf::Vector2f next(window.mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y)));
-                vertices.append(sf::Vertex(next, sf::Color(0, 0, 0)));
+                vertices.push_back(sf::Vertex(next, sf::Color(0, 0, 0)));
                 last = next;
                 break;
             }
@@ -99,6 +102,11 @@ int main()
                 // clear
                 else if (clearBtnSprite.getTexture() == &clearBtnPressed && event.mouseButton.x >= 300 && event.mouseButton.y >= 350) {
                     clearBtnSprite.setTexture(clearBtn);
+                    vector<Point> shape;
+                    for (int i = 0; i < vertices.size(); i++) {
+                        shape.push_back(Point(vertices[i].position.x, vertices[i].position.y));
+                        cout << vertices[i].position.x << " " << vertices[i].position.y << endl;
+                    }
                     vertices.clear();
                 }
             }
@@ -108,8 +116,11 @@ int main()
         window.clear(sf::Color(255,255,255));
         window.draw(clearBtnSprite);
         //draw only actual points recorded and lines in between
-        window.draw(vertices);
+        if (!vertices.empty()) {
+            window.draw(&vertices[0], vertices.size() - 1, sf::LineStrip);
+        }
         window.display();
+
     }
 
     return 0;
