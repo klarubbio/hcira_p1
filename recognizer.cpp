@@ -1,4 +1,5 @@
 #include "recognizer.h"
+#include <numeric>
 #include <iostream>
 using namespace std;
 
@@ -42,4 +43,44 @@ float pathLength(vector<Point>& points) {
 	}
 	//cout << distance << endl;
 	return distance;
+}
+
+void rotateToZero(vector<Point>& points, int n, vector<Point>& rotated) {
+	// get centroid
+	double xAvg = 0;
+	double yAvg = 0;
+
+	for (int i = 0; i < n; i++) {
+		xAvg += points[i].x;
+		yAvg += points[i].y;
+	}
+
+	xAvg = xAvg / n;
+	yAvg = yAvg / n;
+
+	// get theta and rotate
+	double theta = atan2(yAvg - points[0].y, xAvg - points[0].x);
+	rotateBy(points, n, -theta, rotated);
+}
+
+void rotateBy(vector<Point>& points, int n, double theta, vector<Point>& rotated) {
+	// get centroid
+	double xAvg = 0;
+	double yAvg = 0;
+
+	for (int i = 0; i < n; i++) {
+		xAvg += points[i].x;
+		yAvg += points[i].y;
+	}
+
+	xAvg = xAvg / n;
+	yAvg = yAvg / n;
+
+	// rotate
+	for (int i = 0; i < n; i++) {
+		Point newPoint(0, 0);
+		newPoint.x = ((points[i].x - xAvg) * cos(theta)) - ((points[i].y - yAvg) * sin(theta)) + xAvg;
+		newPoint.y = ((points[i].x - xAvg) * sin(theta)) + ((points[i].y - yAvg) * cos(theta)) + yAvg;
+		rotated.push_back(newPoint);
+	}
 }
