@@ -57,6 +57,7 @@ int main()
     //tracks actual points drawn
     //sf::VertexArray vertices(sf::LineStrip);
     vector<sf::Vertex> vertices;
+    vector<sf::Vertex> resampledVisualization;
 
     sf::Vector2f last;
     bool drawing = false;
@@ -78,6 +79,7 @@ int main()
                 }
                 else {
                     //start new stroke
+                    
                     vertices.clear();
                     drawing = true;
                     last = window.mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y });
@@ -115,7 +117,10 @@ int main()
                     cout << "Original points: " << shape.size() << endl;
                     resample(shape, 64, resampled);
                     cout << "Resampled Points: " << resampled.size() << endl;
-
+                    //visualize resampled points for fun
+                    for (int i = 0; i < resampled.size(); i++) {
+                        resampledVisualization.push_back(sf::Vertex(sf::Vector2f(resampled[i].x, resampled[i].y), sf::Color(0, 0, 0)));
+                    }
                     vertices.clear();
                 }
             }
@@ -126,7 +131,13 @@ int main()
         window.draw(clearBtnSprite);
         //draw only actual points recorded and lines in between
         if (!vertices.empty()) {
+            resampledVisualization.clear();
+            shape.clear();
             window.draw(&vertices[0], vertices.size() - 1, sf::LineStrip);
+        }
+        //comment out when not debugging
+        if (!resampledVisualization.empty()) {
+            window.draw(&resampledVisualization[0], resampledVisualization.size() - 1, sf::Points);
         }
         window.display();
 

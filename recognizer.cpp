@@ -8,8 +8,9 @@ void resample(vector<Point>& points,  int n, vector<Point>& resampled) {
 	//cout << resampledDistance << endl;
 	double distFromResampled = 0; //the distance from the last resampled point or first point (will not be a straight line but rather the sum of distance from point to point)
 	resampled.push_back(points[0]);
+	double distFromLast = 0;
 	for (int i = 1; i < points.size(); i++) {
-		double distFromLast = points[i].distance(points[i-1]); //current distance between two points
+		distFromLast = points[i].distance(points[i-1]); //current distance between two points
 		//cout << "distance from last point: " << distFromLast << endl;
 		if ((distFromResampled + distFromLast) >= resampledDistance) {
 			//cout << "Point got far enough away" << endl;
@@ -24,6 +25,12 @@ void resample(vector<Point>& points,  int n, vector<Point>& resampled) {
 			//cout << "Keep looking for further point" << endl;
 			distFromResampled += distFromLast;
 		}
+	}
+	
+	if (resampled.size() < n) {
+		cout << "Current distance from last point: " << distFromResampled << endl;
+		cout << "Target distance between points: " << resampledDistance << endl;
+		resampled.push_back(points[points.size() - 1]);
 	}
 }
 
