@@ -113,13 +113,18 @@ int main()
                         //cout << "Test: Distance from origin: " << shape.at(i).distance(origin) << endl;
                         //cout << vertices[i].position.x << " " << vertices[i].position.y << endl;
                     }
+
                     vector<Point> resampled;
                     cout << "Original points: " << shape.size() << endl;
                     resample(shape, 64, resampled);
                     cout << "Resampled Points: " << resampled.size() << endl;
-                    //visualize resampled points for fun
-                    for (int i = 0; i < resampled.size(); i++) {
-                        resampledVisualization.push_back(sf::Vertex(sf::Vector2f(resampled[i].x, resampled[i].y), sf::Color(0, 0, 0)));
+
+                    vector<Point> rotated;
+                    rotateToZero(resampled, 64, rotated);
+
+                    //visualize resamped and rotated points for fun
+                    for (int i = 0; i < rotated.size(); i++) {
+                        resampledVisualization.push_back(sf::Vertex(sf::Vector2f(rotated[i].x, rotated[i].y), sf::Color(0, 0, 0)));
                     }
                     vertices.clear();
                 }
