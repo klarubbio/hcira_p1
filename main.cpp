@@ -3,6 +3,7 @@
 #include <vector>
 #include "TemplateMap.h"
 #include "fillTemplateMap.h"
+#include "recognizer.h"
 using namespace std;
 
 
@@ -10,6 +11,7 @@ int main()
 {
 
     TemplateMap templateMap;
+    vector<Point> shape;
 
 	fillTemplateMap(templateMap);
 	// getting error about class definitions. it is literally the code below just in another file
@@ -102,11 +104,18 @@ int main()
                 // clear
                 else if (clearBtnSprite.getTexture() == &clearBtnPressed && event.mouseButton.x >= 300 && event.mouseButton.y >= 350) {
                     clearBtnSprite.setTexture(clearBtn);
-                    vector<Point> shape;
+                    
+                    Point origin = Point(0, 0);
                     for (int i = 0; i < vertices.size(); i++) {
                         shape.push_back(Point(vertices[i].position.x, vertices[i].position.y));
-                        cout << vertices[i].position.x << " " << vertices[i].position.y << endl;
+                        //cout << "Test: Distance from origin: " << shape.at(i).distance(origin) << endl;
+                        //cout << vertices[i].position.x << " " << vertices[i].position.y << endl;
                     }
+                    vector<Point> resampled;
+                    cout << "Original points: " << shape.size() << endl;
+                    resample(shape, 64, resampled);
+                    cout << "Resampled Points: " << resampled.size() << endl;
+
                     vertices.clear();
                 }
             }
@@ -122,6 +131,8 @@ int main()
         window.display();
 
     }
+
+    
 
     return 0;
 }
