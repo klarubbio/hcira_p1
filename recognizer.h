@@ -10,3 +10,5 @@ float pathLength(vector<Point>& points); //is this supposed to be float or list 
 
 void rotateToZero(vector<Point>& points, int n, vector<Point>& rotated);
 void rotateBy(vector<Point>& points, int n, double theta, vector<Point>& rotated);
+Rectangle BoundingBox(vector<Point> points); // creates a box within x and y min / max
+vector<Point> ScaleTo(vector<Point> points, double size);
