@@ -116,3 +116,27 @@ vector<Point> ScaleTo(vector<Point> points, double size) {
 
 	return newPoints;
 }
+
+Point Centroid(vector<Point> points) {
+	double x = 0;
+	double y = 0;
+	for (int i = 0; i < points.size(); i++) {
+		x += points[i].x;
+		y += points[i].y;
+	}
+	x /= points.size();
+	y /= points.size();
+	return Point(x, y);
+}
+
+vector<Point> TranslateTo(vector<Point> points, Point point) {
+	Point centroid = Centroid(points);
+	vector<Point> newPoints;
+	for (int i = 0; i < points.size(); i++) {
+		double newX = points[i].x + point.x - centroid.x;
+		double newY = points[i].y + point.y - centroid.y;
+		newPoints[newPoints.size()] = Point(newX, newY);
+	}
+
+	return newPoints;
+}
