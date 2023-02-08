@@ -1,5 +1,7 @@
 #include "recognizer.h"
 #include <numeric>
+#include <limits>
+#include <algorithm>
 #include <iostream>
 using namespace std;
 
@@ -83,4 +85,34 @@ void rotateBy(vector<Point>& points, int n, double theta, vector<Point>& rotated
 		newPoint.y = ((points[i].x - xAvg) * sin(theta)) + ((points[i].y - yAvg) * cos(theta)) + yAvg;
 		rotated.push_back(newPoint);
 	}
+}
+
+Rectangle BoundingBox(vector<Point> points) {
+	double xMin = numeric_limits<double>::infinity();
+	double xMax = numeric_limits<double>::infinity() * -1;
+	double yMin = numeric_limits<double>::infinity();
+	double yMax = numeric_limits<double>::infinity() * -1;
+
+	for (int i = 0; i < points.size(); i++) {
+		xMin = min(xMin, points[i].x);
+		xMax = max(xMax, points[i].x);
+		yMin = min(yMin, points[i].y);
+		xMax = max(yMax, points[i].y);
+	}
+
+	return Rectangle(xMin, yMin, xMax-xMin, yMax-yMin);
+}
+
+vector<Point> ScaleTo(vector<Point> points, double size) {
+	// create Rectangle class
+	// create BoundingBox function
+	Rectangle box = BoundingBox(points);
+	vector<Point> newPoints;
+	for (int i = 0; i < points.size(); i++) {
+		double newX = points[i].x * (size / box.width);
+		double newY = points[i].y * (size / box.height);
+		newPoints[newPoints.size()] = Point(newX, newY);
+	}
+
+	return newPoints;
 }
