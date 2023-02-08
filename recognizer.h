@@ -1,5 +1,6 @@
 #pragma once
 #include "Point.h"
+#include "Rectangle.h"
 #include <vector>
 using namespace std;
 
