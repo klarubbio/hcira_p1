@@ -13,3 +13,5 @@ void rotateToZero(vector<Point>& points, int n, vector<Point>& rotated);
 void rotateBy(vector<Point>& points, int n, double theta, vector<Point>& rotated);
 Rectangle BoundingBox(vector<Point> points); // creates a box within x and y min / max
 vector<Point> ScaleTo(vector<Point> points, double size);
+Point Centroid(vector<Point> points); // finds centroid of shape
+vector<Point> TranslateTo(vector<Point> points, Point point);
