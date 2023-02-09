@@ -25,6 +25,7 @@ int main()
     sf::Texture clearBtnPressed;
     sf::Sprite clearBtnSprite;
     sf::Font outputFont;
+    sf::Text outputText;
 
     window.setFramerateLimit(1000);
 
@@ -37,12 +38,17 @@ int main()
         std::cout << "failed to load clear_pressed.png";
     }
 
-    if (!outFont.loadFromFile("Roboto-Black.ttf")) {
+    if (!outputFont.loadFromFile("Roboto-Black.ttf")) {
         std::cout << "failed to load Roboto-Black.ttf";
     }
 
     clearBtnSprite.setPosition(300, 350);
     clearBtnSprite.setTexture(clearBtn);
+
+    outputText.setPosition(0, 375);
+    outputText.setFont(outputFont);
+    outputText.setCharacterSize(24);
+    outputText.setFillColor(sf::Color::Blue);
 
     //tracks actual points drawn
     //sf::VertexArray vertices(sf::LineStrip);
@@ -108,7 +114,7 @@ int main()
                     vector<Point> translated;
                     translated = TranslateTo(scaled, Point(width/2.0,height/2.0));
                     //Recognize
-                    cout << Recognize(translated, preprocessedTemplates).first << endl;
+                    outputText.setString(" " + Recognize(translated, preprocessedTemplates).first);
 
 
                     //visualize resamped and rotated and translated points for fun, comment out when not debugging
@@ -135,6 +141,7 @@ int main()
 
         window.clear(sf::Color(255,255,255));
         window.draw(clearBtnSprite);
+        window.draw(outputText);
         //draw only actual points recorded and lines in between
         if (!vertices.empty() && resampledVisualization.empty()) {
             resampledVisualization.clear();
