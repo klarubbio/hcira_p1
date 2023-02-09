@@ -108,7 +108,7 @@ int main()
                     cout << "Resampled Points: " << resampled.size() << endl;
                     //Rotation function calls
                     vector<Point> rotated;
-                    rotateToZero(resampled, 64, rotated);
+                    rotateToZero(resampled, resampled.size(), rotated);
                     //Scaling & translation function calls
                     vector<Point> scaled;
                     scaled = ScaleTo(rotated, width);
