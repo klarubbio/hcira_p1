@@ -142,7 +142,7 @@ vector<Point> TranslateTo(vector<Point> points, Point point) {
 }
 
 pair<string, double> Recognize(vector<Point>& points, TemplateMap templates) {
-	double best = numeric_limits<double>::infinity() * -1;
+	double best = numeric_limits<double>::infinity();
 	string bestName = "";
 
 	//set constants
@@ -152,6 +152,7 @@ pair<string, double> Recognize(vector<Point>& points, TemplateMap templates) {
 	for (auto itr = templates.templates.begin(); itr != templates.templates.end(); itr++) {
 		for (int i = 0; i < itr->second.size(); i++) {
 			double distance = DistanceAtBestAngle(points, itr->second[i], -theta, theta, thetaDelta);
+			
 			if (distance < best) {
 				best = distance;
 				bestName = itr->first;
@@ -163,6 +164,42 @@ pair<string, double> Recognize(vector<Point>& points, TemplateMap templates) {
 	return make_pair(bestName, score);
 }
 
-double distanceAtBestAngle(vector<Point>& points, vector<Point>& compare, double thetaA, double thetaB, double thetaDelta) {
-	return 0.0;
+double DistanceAtBestAngle(vector<Point>& points, vector<Point>& compare, double thetaA, double thetaB, double thetaDelta) {
+	double phi = 0.5 * (-1 + sqrt(5));
+	double x1 = (phi * thetaA) + (1 - phi) * thetaB;
+	double f1 = DistanceAtAngle(points, compare, x1);
+	double x2 = (1 - phi) * thetaA + (phi * thetaB);
+	double f2 = DistanceAtAngle(points, compare, x2);
+	while (abs(thetaB - thetaA) > thetaDelta) {
+		if (f1 < f2) {
+			thetaB = x2;
+			x2 = x1;
+			f2 = f1;
+			x1 = (phi * thetaA) + (1 - phi) * thetaB;
+			f1 = DistanceAtAngle(points, compare, x1);
+		}
+		else {
+			thetaA = x1;
+			x1 = x2;
+			f1 = f2;
+			x2 = (1 - phi) * thetaA + (phi * thetaB);
+			f2 = DistanceAtAngle(points, compare, x2);
+		}
+	}
+	return min(f1, f2);
+}
+
+double DistanceAtAngle(vector<Point>& points, vector<Point>& compare, double theta) {
+	vector<Point> rotated;
+	rotateBy(points, points.size(), theta, rotated);
+	double distance = PathDistance(rotated, compare);
+	return distance;
+}
+
+double PathDistance(vector<Point>& points, vector<Point>& compare) {
+	double distance = 0.0;
+	for (int i = 0; i < points.size(); i++) {
+		distance += points[i].distance(compare[i]);
+	}
+	return (distance / points.size());
 }

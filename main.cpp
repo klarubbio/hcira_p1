@@ -114,6 +114,8 @@ int main()
                     scaled = ScaleTo(rotated, width);
                     vector<Point> translated;
                     translated = TranslateTo(scaled, Point(width/2.0,height/2.0));
+                    //Recognize
+                    cout << Recognize(translated, preprocessedTemplates).first << endl;
 
 
                     //visualize resamped and rotated and translated points for fun, comment out when not debugging
