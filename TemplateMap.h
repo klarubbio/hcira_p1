@@ -9,9 +9,8 @@
 using namespace std;
 
 class TemplateMap {
-private:
-	map<string, vector<vector<Point>>> templates;
 public:
+	map<string, vector<vector<Point>>> templates;
 	TemplateMap();
 	void addTemplate(string templateName, vector<Point> newTemplate);
 	void clearTemplates(string templateName);

@@ -97,7 +97,7 @@ Rectangle BoundingBox(vector<Point> points) {
 		xMin = min(xMin, points[i].x);
 		xMax = max(xMax, points[i].x);
 		yMin = min(yMin, points[i].y);
-		xMax = max(yMax, points[i].y);
+		yMax = max(yMax, points[i].y);
 	}
 
 	return Rectangle(xMin, yMin, xMax-xMin, yMax-yMin);
@@ -111,7 +111,7 @@ vector<Point> ScaleTo(vector<Point> points, double size) {
 	for (int i = 0; i < points.size(); i++) {
 		double newX = points[i].x * (size / box.width);
 		double newY = points[i].y * (size / box.height);
-		newPoints[newPoints.size()] = Point(newX, newY);
+		newPoints.push_back(Point(newX, newY));
 	}
 
 	return newPoints;
@@ -135,8 +135,34 @@ vector<Point> TranslateTo(vector<Point> points, Point point) {
 	for (int i = 0; i < points.size(); i++) {
 		double newX = points[i].x + point.x - centroid.x;
 		double newY = points[i].y + point.y - centroid.y;
-		newPoints[newPoints.size()] = Point(newX, newY);
+		newPoints.push_back(Point(newX, newY));
 	}
 
 	return newPoints;
+}
+
+pair<string, double> Recognize(vector<Point>& points, TemplateMap templates) {
+	double best = numeric_limits<double>::infinity() * -1;
+	string bestName = "";
+
+	//set constants
+	double theta = 45.0;
+	double thetaDelta = 2.0;
+
+	for (auto itr = templates.templates.begin(); itr != templates.templates.end(); itr++) {
+		for (int i = 0; i < itr->second.size(); i++) {
+			double distance = DistanceAtBestAngle(points, itr->second[i], -theta, theta, thetaDelta);
+			if (distance < best) {
+				best = distance;
+				bestName = itr->first;
+			}
+		}
+	}
+
+	double score = 1 - (best / 0.5 * (sqrt(pow(400, 2) + pow(400, 2))));
+	return make_pair(bestName, score);
+}
+
+double distanceAtBestAngle(vector<Point>& points, vector<Point>& compare, double thetaA, double thetaB, double thetaDelta) {
+	return 0.0;
 }

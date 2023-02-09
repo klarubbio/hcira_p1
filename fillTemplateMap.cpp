@@ -3,7 +3,7 @@
 #include "TemplateMap.h"
 
 
-void fillTemplateMap(TemplateMap &templateMap) {
+void fillTemplateMap(TemplateMap &templateMap, TemplateMap& preprocessed) {
 	// triangle
 	vector<Point> triangle;
 	triangle.push_back(Point(137, 139));
@@ -1008,4 +1008,22 @@ void fillTemplateMap(TemplateMap &templateMap) {
 	pigtail.push_back(Point(199, 212));
 	pigtail.push_back(Point(201, 211));
 	templateMap.addTemplate("pigtail", pigtail);
+
+	//process templates
+	for (auto itr = templateMap.templates.begin(); itr != templateMap.templates.end(); itr++) {
+		for (int j = 0; j < itr->second.size(); j++) {
+			vector<Point> resampled;
+			resample(itr->second[j], 64, resampled);
+			//Rotation function calls
+			vector<Point> rotated;
+			rotateToZero(resampled, 64, rotated);
+			//Scaling & translation function calls
+			vector<Point> scaled;
+			scaled = ScaleTo(rotated, 400);
+			vector<Point> translated;
+			translated = TranslateTo(scaled, Point(200, 200));
+			preprocessed.addTemplate(itr->first, translated);
+		}
+		
+	}
 }

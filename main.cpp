@@ -11,14 +11,11 @@ int main()
 {
 
     TemplateMap templateMap;
+    TemplateMap preprocessedTemplates;
     vector<Point> shape;
 
-	fillTemplateMap(templateMap);
-	// getting error about class definitions. it is literally the code below just in another file
-    
-	
-
-    templateMap.printTemplateMap();
+	fillTemplateMap(templateMap, preprocessedTemplates);
+    //templateMap.printTemplateMap();
     
     
     int width = 400;
@@ -97,6 +94,34 @@ int main()
             else if (event.type == sf::Event::MouseButtonReleased) {
                 if (drawing) {
                     drawing = false;
+                    Point origin = Point(0, 0);
+                    for (int i = 0; i < vertices.size(); i++) {
+                        shape.push_back(Point(vertices[i].position.x, vertices[i].position.y));
+                        //cout << "Test: Distance from origin: " << shape.at(i).distance(origin) << endl;
+                        //cout << vertices[i].position.x << " " << vertices[i].position.y << endl;
+                    }
+
+                    //Resampling function calls
+                    vector<Point> resampled;
+                    cout << "Original points: " << shape.size() << endl;
+                    resample(shape, 64, resampled);
+                    cout << "Resampled Points: " << resampled.size() << endl;
+                    //Rotation function calls
+                    vector<Point> rotated;
+                    rotateToZero(resampled, 64, rotated);
+                    //Scaling & translation function calls
+                    vector<Point> scaled;
+                    scaled = ScaleTo(rotated, width);
+                    vector<Point> translated;
+                    translated = TranslateTo(scaled, Point(width/2.0,height/2.0));
+
+
+                    //visualize resamped and rotated and translated points for fun, comment out when not debugging
+                    /*
+                    for (int i = 0; i < rotated.size(); i++) {
+                        resampledVisualization.push_back(sf::Vertex(sf::Vector2f(translated[i].x, translated[i].y), sf::Color(0, 0, 0)));
+                        //cout << translated[i].x << " " << translated[i].y << endl;
+                    }*/
                     break;
                 }
                 // if mouse btn released outside of clear btn, do not clear
@@ -106,27 +131,8 @@ int main()
                 // clear
                 else if (clearBtnSprite.getTexture() == &clearBtnPressed && event.mouseButton.x >= 300 && event.mouseButton.y >= 350) {
                     clearBtnSprite.setTexture(clearBtn);
-                    
-                    Point origin = Point(0, 0);
-                    for (int i = 0; i < vertices.size(); i++) {
-                        shape.push_back(Point(vertices[i].position.x, vertices[i].position.y));
-                        //cout << "Test: Distance from origin: " << shape.at(i).distance(origin) << endl;
-                        //cout << vertices[i].position.x << " " << vertices[i].position.y << endl;
-                    }
-
-                    vector<Point> resampled;
-                    cout << "Original points: " << shape.size() << endl;
-                    resample(shape, 64, resampled);
-                    cout << "Resampled Points: " << resampled.size() << endl;
-
-                    vector<Point> rotated;
-                    rotateToZero(resampled, 64, rotated);
-
-                    //visualize resamped and rotated points for fun
-                    for (int i = 0; i < rotated.size(); i++) {
-                        resampledVisualization.push_back(sf::Vertex(sf::Vector2f(rotated[i].x, rotated[i].y), sf::Color(0, 0, 0)));
-                    }
                     vertices.clear();
+                    resampledVisualization.clear();
                 }
             }
             
@@ -135,15 +141,16 @@ int main()
         window.clear(sf::Color(255,255,255));
         window.draw(clearBtnSprite);
         //draw only actual points recorded and lines in between
-        if (!vertices.empty()) {
+        if (!vertices.empty() && resampledVisualization.empty()) {
             resampledVisualization.clear();
             shape.clear();
             window.draw(&vertices[0], vertices.size() - 1, sf::LineStrip);
         }
+        /*
         //comment out when not debugging
         if (!resampledVisualization.empty()) {
             window.draw(&resampledVisualization[0], resampledVisualization.size() - 1, sf::Points);
-        }
+        }*/
         window.display();
 
     }
