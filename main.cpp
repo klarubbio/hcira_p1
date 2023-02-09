@@ -24,6 +24,7 @@ int main()
     sf::Texture clearBtn;
     sf::Texture clearBtnPressed;
     sf::Sprite clearBtnSprite;
+    sf::Font outputFont;
 
     window.setFramerateLimit(1000);
 
@@ -36,16 +37,8 @@ int main()
         std::cout << "failed to load clear_pressed.png";
     }
 
-    clearBtnSprite.setPosition(300, 350);
-    clearBtnSprite.setTexture(clearBtn);
-
-    // load clear button states (pressed and unpressed)
-    if (!clearBtn.loadFromFile("clear.png")) {
-        std::cout << "failed to load clear.png";
-    }
-
-    if (!clearBtnPressed.loadFromFile("clear_pressed.png")) {
-        std::cout << "failed to load clear_pressed.png";
+    if (!outFont.loadFromFile("Roboto-Black.ttf")) {
+        std::cout << "failed to load Roboto-Black.ttf";
     }
 
     clearBtnSprite.setPosition(300, 350);
