@@ -16,12 +16,13 @@ Working on Visual Studio 2019 with SFML for VS C++ 15
 - Resampling
   - Since the user draws a shape at a variable speed, different numbers of points are created each time. In order to adequately compare the user's drawing to our stored templates, we must resample the drawing into N different points. In this case, N = 64.
 - Rotation
-  - Each drawing will always have a slight rotation to it due to different user input. Once again, in order to compare their drawing to the templates properly the drawing must be rotated properly. 
+  - Each drawing will always have a slight rotation to it due to different user input. Once again, in order to compare their drawing to the templates properly the drawing must be rotated properly. Each Drawing is rotated to 0.
 - Scaling and Translation
   - Since each drawing could be drawn at different sizes, it must be scaled down to a size that can be compared to the templates. These drawings also occur at different points on the canvas, so they must also be translated. This happens by creating a box that captures the x-max, x-min, y-max, and y-min values of the set of coordinates, then scaling them appropriately by using the shapes centroid. The translation shifts the drawing to a point on the canvas that is constant for all templates.
 - Matching Process
   - After the previous set of steps, the drawing is now able to be compared appropriately. The matching process works by going through each template and comparing the differences in the distances of the sets of points. The template with the greatest score, or least difference between points, is returned as the matching value.
 ### Output the Result
+  - Results from the matching process are output to the lower left hand corner and not updated until a new drawing is made.
 
 ## Part 1: Drawing on a Canvas (Specific information in this section (line numbers) may not be accurate as of 2/13/23)
 ### Set up a Development Environment
