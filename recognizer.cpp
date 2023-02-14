@@ -155,6 +155,7 @@ pair<string, double> Recognize(vector<Point>& points, TemplateMap templates) {
 	double theta = 45.0;
 	double thetaDelta = 2.0;
 
+	//Look through all best distances and select lowest
 	for (auto itr = templates.templates.begin(); itr != templates.templates.end(); itr++) {
 		for (int i = 0; i < itr->second.size(); i++) {
 			double distance = DistanceAtBestAngle(points, itr->second[i], -theta, theta, thetaDelta);
@@ -167,15 +168,18 @@ pair<string, double> Recognize(vector<Point>& points, TemplateMap templates) {
 	}
 
 	double score = 1 - (best / 0.5 * (sqrt(pow(400, 2) + pow(400, 2))));
+	//return best score and corresponding template name
 	return make_pair(bestName, score);
 }
 
 double DistanceAtBestAngle(vector<Point>& points, vector<Point>& compare, double thetaA, double thetaB, double thetaDelta) {
+	//math to find the best angle theta (lowest distance)
 	double phi = 0.5 * (-1 + sqrt(5));
 	double x1 = (phi * thetaA) + (1 - phi) * thetaB;
 	double f1 = DistanceAtAngle(points, compare, x1);
 	double x2 = (1 - phi) * thetaA + (phi * thetaB);
 	double f2 = DistanceAtAngle(points, compare, x2);
+	//keep calculating until the distance between angles is acceptable
 	while (abs(thetaB - thetaA) > thetaDelta) {
 		if (f1 < f2) {
 			thetaB = x2;
@@ -195,6 +199,7 @@ double DistanceAtBestAngle(vector<Point>& points, vector<Point>& compare, double
 	return min(f1, f2);
 }
 
+//helper function to find the distance between points at an angle theta
 double DistanceAtAngle(vector<Point>& points, vector<Point>& compare, double theta) {
 	vector<Point> rotated;
 	rotateBy(points, points.size(), theta, rotated);
@@ -202,6 +207,7 @@ double DistanceAtAngle(vector<Point>& points, vector<Point>& compare, double the
 	return distance;
 }
 
+//helper function to find path distance between a vector of points (point to point to point rather than the linear distance between furthest points)
 double PathDistance(vector<Point>& points, vector<Point>& compare) {
 	double distance = 0.0;
 	for (int i = 0; i < points.size(); i++) {
