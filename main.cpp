@@ -18,9 +18,31 @@ int main()
 {
 
     TemplateMap templateMap;
-    TemplateMap preprocessedTemplates;
-    vector<Point> shape;
+    //FILL FROM XML HERE
 
+    // Preprocess points from XML file and save to preprocessedTemplates data structure
+    TemplateMap preprocessedTemplates;
+    for (auto itr = templateMap.templates.begin(); itr != templateMap.templates.begin(); itr++) {
+        for (int i = 0; i < itr->second.size(); i++) {
+            vector<Point> resampled;
+            resample(itr->second[i], 64, resampled);
+            //Rotation function calls
+            vector<Point> rotated;
+            rotateToZero(resampled, 64, rotated);
+            //Scaling & translation function calls
+            vector<Point> scaled;
+            scaled = ScaleTo(rotated, 400);
+            vector<Point> translated;
+            translated = TranslateTo(scaled, Point(200, 200));
+            preprocessedTemplates.addTemplate(itr->first, translated);
+        }
+    }
+
+    return 0;
+}
+
+    /*REMOVE COMMENT TO USE GUI
+    vector<Point> shape;
 	fillTemplateMap(templateMap, preprocessedTemplates);
     //templateMap.printTemplateMap();
     
@@ -130,9 +152,10 @@ int main()
                         resampledVisualization.push_back(sf::Vertex(sf::Vector2f(translated[i].x, translated[i].y), sf::Color(0, 0, 0)));
                         //cout << translated[i].x << " " << translated[i].y << endl;
                     }*/
-                    break;
+                    // REMOVE COMMENT TO USE GUI break;
                 }
                 // if mouse btn released outside of clear btn, do not clear
+                /* REMOVE COMMENT TO USE GUI
                 else if (clearBtnSprite.getTexture() == &clearBtnPressed && (event.mouseButton.x < 300 || event.mouseButton.y < 350)) {
                     clearBtnSprite.setTexture(clearBtn);;
                 }
@@ -159,12 +182,12 @@ int main()
         //comment out when not debugging
         if (!resampledVisualization.empty()) {
             window.draw(&resampledVisualization[0], resampledVisualization.size() - 1, sf::Points);
-        }*/
+        }*/ /* REMOVE COMMENT TO USE GUI
         window.display();
 
     }
+    
+                return 0;
 
     
-
-    return 0;
-}
+}*/
