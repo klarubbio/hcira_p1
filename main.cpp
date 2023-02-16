@@ -16,26 +16,30 @@ using namespace std;
 
 int main()
 {
-
-    TemplateMap templateMap;
+    
+    vector<TemplateMap> templates;
     //FILL FROM XML HERE
 
     // Preprocess points from XML file and save to preprocessedTemplates data structure
-    TemplateMap preprocessedTemplates;
-    for (auto itr = templateMap.templates.begin(); itr != templateMap.templates.begin(); itr++) {
-        for (int i = 0; i < itr->second.size(); i++) {
-            vector<Point> resampled;
-            resample(itr->second[i], 64, resampled);
-            //Rotation function calls
-            vector<Point> rotated;
-            rotateToZero(resampled, 64, rotated);
-            //Scaling & translation function calls
-            vector<Point> scaled;
-            scaled = ScaleTo(rotated, 400);
-            vector<Point> translated;
-            translated = TranslateTo(scaled, Point(200, 200));
-            preprocessedTemplates.addTemplate(itr->first, translated);
+    vector<TemplateMap> preprocessedTemplates;
+    for (int i = 0; i < templates.size(); i++) {
+        TemplateMap preprocessed;
+        for (auto itr = templates[i].templates.begin(); itr != templates[i].templates.begin(); itr++) {
+            for (int j = 0; j < itr->second.size(); j++) {
+                vector<Point> resampled;
+                resample(itr->second[j], 64, resampled);
+                //Rotation function calls
+                vector<Point> rotated;
+                rotateToZero(resampled, 64, rotated);
+                //Scaling & translation function calls
+                vector<Point> scaled;
+                scaled = ScaleTo(rotated, 400);
+                vector<Point> translated;
+                translated = TranslateTo(scaled, Point(200, 200));
+                preprocessed.addTemplate(itr->first, translated);
+            }
         }
+        preprocessedTemplates.push_back(preprocessed);
     }
 
     return 0;
