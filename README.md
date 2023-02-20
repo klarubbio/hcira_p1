@@ -9,6 +9,19 @@ Use for SFML setup: https://www.sfml-dev.org/tutorials/2.5/start-vc.php
 
 Working on Visual Studio 2019 with SFML for VS C++ 15
 
+# Part 3
+### parseXML.cpp
+I am having some trouble with getting the files into the working directory. I used boost for xml parsing
+
+Download: https://www.boost.org/users/download/
+Install: 
+- go into project properties
+- go into C/C++ > General > Additional Include Dependencies
+- add a the file directory for this package: downloads (or wherever boost was extracted)\boost_1_81_0\boost_81_0
+- go into Linker > General > Additional Library Dependencies
+- add a the file directory for this package: downloads (or wherever boost was extracted)\boost_1_81_0\boost_81_0\boost
+
+
 ## Part 2: Online/Live Recognition
 ### Store the Points
 main.cpp - Lines 78-108 - Points are recorded as the user moves their mouse while pressing a mouse button. These points are stored each time that the user releases their mouse button in a vector of points called shape. 
