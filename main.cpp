@@ -14,6 +14,7 @@ Spring 2023
 #include "TemplateMap.h"
 #include "fillTemplateMap.h"
 #include "recognizer.h"
+#include "parseXML.h"
 using namespace std;
 
 
@@ -26,7 +27,7 @@ int main()
 
     std::for_each(
         in(std::cin), in(), std::cout << (_1 * 3) << " ");*/
-    
+    parseXML();
     vector<TemplateMap> templates;
     //FILL FROM XML HERE
 

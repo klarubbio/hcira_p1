@@ -3,6 +3,7 @@
 #include <string>
 #include <boost/property_tree/ptree.hpp>
 #include "TemplateMap.h"
+#include "parseXML.h"
 
 
 using boost::property_tree::ptree;
@@ -20,7 +21,7 @@ void parseXML() {
 
 	// for loop for users
   // ERROR in file directory, need help here
-	string currentDirectory = "c://xml/xml_logs"; // current directory where this folder is stored
+	string currentDirectory = "c://xml/xml_logs/"; // current directory where this folder is stored
 	for (int i = 2; i < 12; i++) {
 		string userDirectory = currentDirectory;
 		if (i < 10) {
@@ -37,7 +38,7 @@ void parseXML() {
 
 		// 16 gestures
 		for (int j = 0; j < gestures.size(); j++) {
-			userDirectory = templateDirectory + "/" + gestures[i];
+			userDirectory = templateDirectory + "/" + gestures[j];
 			vector<Point> _template;
 			for (int k = 1; k < 11; k++) {
 				if (k < 10) {
@@ -56,7 +57,7 @@ void parseXML() {
 				// each gesture has NumPts <Point X="x-val" Y="y-val" T="?" />
 
 				ptree pt;
-				read_xml(userDirectory, pt);
+				read_xml(userDirectory, pt); //exception thrown here
 
 				
 				BOOST_FOREACH(ptree::value_type & child, pt.get_child("Gesture.Point")) {
