@@ -66,16 +66,24 @@ void parseXML() {
 				// each gesture has NumPts <Point X="x-val" Y="y-val" T="?" />
 
 				ptree pt;
-				read_xml(userDirectory, pt); 
+				read_xml(userDirectory, pt);
+				const ptree& formats = pt.get_child("Gesture", empty_ptree());
 
-				
-				BOOST_FOREACH(ptree::value_type & child, pt.get_child("Gesture.Point")) {
-					cout << child.second.get<string>("<xmlattr.X") << endl; //ptree bad path thrown here
-					double a = child.second.get<double>("<xmlattr.X");
-					double b = child.second.get<double>("<xmlattr.Y");
-					Point p = Point(a, b);
-					curr_template.push_back(p);
+				BOOST_FOREACH(const ptree::value_type & child, formats) {
+					const ptree& attributes = child.second.get_child("<xmlattr>", empty_ptree());
+					int i = 0;
+					BOOST_FOREACH(const ptree::value_type & value_type, attributes) {
+						cout << value_type.second.data() << endl; //ptree bad path thrown here
+						//if (i == 0) --> X
+						//if (i == 1) --> Y
+						//else (i == 2) --> T
+						//i++
+					}
 				}
+				//double a = child.second.get<double>("<xmlattr.X");
+				//double b = child.second.get<double>("<xmlattr.Y");
+				//Point p = Point(a, b);
+				//curr_template.push_back(p);
 
 				currentUserMap.addTemplate(gestures[i], curr_template);
 			}
