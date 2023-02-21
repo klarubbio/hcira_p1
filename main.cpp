@@ -6,7 +6,10 @@ Spring 2023
 
 
 #include <SFML/Graphics.hpp>
+#include <boost/lambda/lambda.hpp>
 #include <iostream>
+#include <iterator>
+#include <algorithm>
 #include <vector>
 #include "TemplateMap.h"
 #include "fillTemplateMap.h"
@@ -16,12 +19,19 @@ using namespace std;
 
 int main()
 {
+    /*
+    // boost sanity check (test this after installing boost library by typing "1 2 3")
+    using namespace boost::lambda;
+    typedef std::istream_iterator<int> in;
+
+    std::for_each(
+        in(std::cin), in(), std::cout << (_1 * 3) << " ");*/
     
     vector<TemplateMap> templates;
     //FILL FROM XML HERE
 
     // Preprocess points from XML file and save to preprocessedTemplates data structure
-    vector<TemplateMap> preprocessedTemplates;
+    vector<TemplateMap> preprocessedTemplates; //list in which each item is a different user's template map
     for (int i = 0; i < templates.size(); i++) {
         TemplateMap preprocessed;
         for (auto itr = templates[i].templates.begin(); itr != templates[i].templates.begin(); itr++) {
@@ -36,9 +46,11 @@ int main()
                 scaled = ScaleTo(rotated, 400);
                 vector<Point> translated;
                 translated = TranslateTo(scaled, Point(200, 200));
+                //Add the template to the templatemap for the current user
                 preprocessed.addTemplate(itr->first, translated);
             }
         }
+        //add to vector containing all users' samples
         preprocessedTemplates.push_back(preprocessed);
     }
 
@@ -157,7 +169,7 @@ int main()
                         //cout << translated[i].x << " " << translated[i].y << endl;
                     }*/
                     // REMOVE COMMENT TO USE GUI break;
-                }
+                //}
                 // if mouse btn released outside of clear btn, do not clear
                 /* REMOVE COMMENT TO USE GUI
                 else if (clearBtnSprite.getTexture() == &clearBtnPressed && (event.mouseButton.x < 300 || event.mouseButton.y < 350)) {
