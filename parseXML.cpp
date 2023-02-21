@@ -72,12 +72,19 @@ void parseXML() {
 				BOOST_FOREACH(const ptree::value_type & child, formats) {
 					const ptree& attributes = child.second.get_child("<xmlattr>", empty_ptree());
 					int i = 0;
+					Point p;
 					BOOST_FOREACH(const ptree::value_type & value_type, attributes) {
 						cout << value_type.second.data() << endl; //ptree bad path thrown here
-						//if (i == 0) --> X
-						//if (i == 1) --> Y
-						//else (i == 2) --> T
-						//i++
+						if (i == 0) {
+							// x value
+							p.x = value_type.second.data();
+						}
+						else if (i == 1) {
+							// y value
+							p.y = value_type.second.data();
+						}
+						
+						i++;
 					}
 				}
 				//double a = child.second.get<double>("<xmlattr.X");
