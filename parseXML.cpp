@@ -1,16 +1,14 @@
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
 #include <boost/property_tree/ptree.hpp>
-#include "TemplateMap.h"
-#include "parseXML.h"
-
-
-using boost::property_tree::ptree;
-using namespace std;
-
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/foreach.hpp>
+#include "TemplateMap.h"
+#include "parseXML.h"
+using namespace std;
+
 
 void parseXML() {
 	vector<string> users = { "s02", "s03", "s04", "s05", "s06", "s07", "s08", "s09", "s10", "s11" };
@@ -19,9 +17,20 @@ void parseXML() {
 
 	vector<TemplateMap> userTemplates;
 
+	/* 
+	* testing to see where the file path should start (start at xml folder, not c drive)
+	std::ifstream myFile;
+	myFile.open("xml/xml_logs/s02/slow/arrow01.xml");
+	if (myFile.is_open()) {
+		cout << "worked";
+	}
+
+	ptree pt;
+	read_xml("xml/xml_logs/s02/slow/arrow01.xml", pt);*/
+
 	// for loop for users
   // ERROR in file directory, need help here
-	string currentDirectory = "c://xml/xml_logs/"; // current directory where this folder is stored
+	string currentDirectory = "xml/xml_logs/"; // current directory where this folder is stored
 	for (int i = 2; i < 12; i++) {
 		string userDirectory = currentDirectory;
 		if (i < 10) {
@@ -57,11 +66,11 @@ void parseXML() {
 				// each gesture has NumPts <Point X="x-val" Y="y-val" T="?" />
 
 				ptree pt;
-				read_xml(userDirectory, pt); //exception thrown here
+				read_xml(userDirectory, pt); 
 
 				
 				BOOST_FOREACH(ptree::value_type & child, pt.get_child("Gesture.Point")) {
-					cout << child.second.get<string>("<xmlattr.X") << endl;
+					cout << child.second.get<string>("<xmlattr.X") << endl; //ptree bad path thrown here
 					double a = child.second.get<double>("<xmlattr.X");
 					double b = child.second.get<double>("<xmlattr.Y");
 					Point p = Point(a, b);
