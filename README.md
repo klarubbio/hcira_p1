@@ -7,12 +7,7 @@ Spring 2023
 
 Use for SFML setup: https://www.sfml-dev.org/tutorials/2.5/start-vc.php
 
-Working on Visual Studio 2019 with SFML for VS C++ 15
-
-# Part 3
-### parseXML.cpp
-I am having some trouble with getting the files into the working directory. I used boost for xml parsing
-
+Use for Boost XML setup:
 Download: https://www.boost.org/users/download/
 Install: 
 - go into project properties
@@ -20,6 +15,15 @@ Install:
 - add a the file directory for this package: downloads (or wherever boost was extracted)\boost_1_81_0\boost_81_0
 - go into Linker > General > Additional Library Dependencies
 - add a the file directory for this package: downloads (or wherever boost was extracted)\boost_1_81_0\boost_81_0\boost
+
+Working on Visual Studio 2019 with SFML for VS C++ 15
+
+# Part 3
+### Read in Dataset
+### Connect to Recognizer
+main.cpp - Lines 36-59 - The data structure containing the raw user data is looped through. A new data structure (vector<TemplateMap> preprocessedUserData) is created to hold the preprocessed data which will be used for recognition while maintaining raw data points. The functions from the recognizer in recognizer.cpp (resample, rotateToZero, scaleTo, translateTo) are called on each point. Each user's data is represented as a TemplateMap within the vector, which contains their respective samples for each gesture type. 
+### Loop over Dataset
+### Output the Result
 
 
 ## Part 2: Online/Live Recognition
@@ -63,4 +67,5 @@ main.cpp - Lines 107-121  (main)- Clears the list of vertices. When vertices is 
 4. Helpful forum for drawing approach: https://stackoverflow.com/questions/53085055/using-sfml-to-draw-stuff
 5. Using premade templates: http://depts.washington.edu/acelab/proj/dollar/index.html
 6. Algorithm modeled after the pseudocode here: https://dl.acm.org/doi/10.1145/1294211.1294238
+7. Library and documentation for XML parsing: https://www.boost.org/users/download/
 
