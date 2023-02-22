@@ -67,13 +67,14 @@ int main()
     for (int U = 0; U < rawUserData.size(); U++) {
         // for each example E = 1 to 9
         for (int E = 1; E < 10; E++) {
+            vector<TemplateMap> chosenGestureTemplates;
+
             for (int i = 0; i < 100; i++) {
-                vector<TemplateMap> chosenGestureTemplates;
                 vector<vector<Point>> candidates;
+                TemplateMap randTemplates;
 
                 // for each gesture type G
                 for (auto G = rawUserData[U].templates.begin(); G != rawUserData[U].templates.end(); G++) {
-                    TemplateMap randTemplates;
                     vector<vector<Point>> gestures = preprocessedUserData.at(U).templates[G->first];
                     vector<bool> alreadyChose;
                     alreadyChose.resize(gestures.size(), false);
