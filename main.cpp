@@ -58,10 +58,77 @@ int main()
         preprocessedUserData.push_back(processed);
     }
 
-
-    
-
     cout << preprocessedUserData.size();
+
+    // LOOP OVER DATASET
+    vector<vector<int>> UGScores(rawUserData.size(), vector<int>(rawUserData[0].templates.size(), 0));
+
+    // for each user U = 1 to 10
+    for (int U = 0; U < rawUserData.size(); U++) {
+        // for each example E = 1 to 9
+        for (int E = 1; E < 10; E++) {
+            for (int i = 0; i < 100; i++) {
+                vector<TemplateMap> chosenGestureTemplates;
+                vector<vector<Point>> candidates;
+
+                // for each gesture type G
+                for (auto G = rawUserData[U].templates.begin(); G != rawUserData[U].templates.end(); G++) {
+                    TemplateMap randTemplates;
+                    vector<vector<Point>> gestures = preprocessedUserData.at(U).templates[G->first];
+                    vector<bool> alreadyChose;
+                    alreadyChose.resize(gestures.size(), false);
+
+                    // Choose E templates and 1 candidate
+                    for (int j = 0; j <= E; j++) {
+                        int randInd = rand() % gestures.size();
+
+                        if (!alreadyChose[randInd]) {
+                            if (j < E) {
+                                randTemplates.addTemplate(G->first, gestures[randInd]);
+
+                            }
+                            else {
+                                // last iteration, this is the candidate
+                                candidates.push_back(gestures[randInd]);
+
+                            }
+
+                        }
+                        else {
+                            j--;
+                        }
+                    }
+
+                    chosenGestureTemplates.push_back(randTemplates);
+                }
+
+                int g = 0;
+                // for each candidate T (templates[E]) recognize with E (templates[0 to E])
+                for (auto G = rawUserData[U].templates.begin(); G != rawUserData[U].templates.end(); G++) {
+                    // reco score for each U,G += 1
+                    if ((G->first).compare(Recognize(candidates[g], chosenGestureTemplates[g]).first) == 0) {
+                        UGScores[U][g]++;
+                    }
+
+                    g++;
+                }
+            }
+
+            // reco score for each U,G /= 100
+            for (int i = 0; i < rawUserData[U].templates.size(); i++) {
+                UGScores[U][i] /= 100;
+            }
+        }
+
+        double average = 0;
+
+        for (int i = 0; i < rawUserData[U].templates.size(); i++) {
+            average += UGScores[U][i];
+        }
+
+        average /= rawUserData[U].templates.size();
+        cout << "User " << U + 1 << " accuracy: " << average << endl;
+    }
 
     return 0;
 }
