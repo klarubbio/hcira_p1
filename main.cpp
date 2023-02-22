@@ -27,16 +27,20 @@ int main()
 
     std::for_each(
         in(std::cin), in(), std::cout << (_1 * 3) << " ");*/
-    parseXML();
-    vector<TemplateMap> templates;
+    vector<TemplateMap> rawUserData;
+    parseXML(rawUserData);
+    cout << rawUserData.size();
     //FILL FROM XML HERE
 
     // Preprocess points from XML file and save to preprocessedTemplates data structure
-    vector<TemplateMap> preprocessedTemplates; //list in which each item is a different user's template map
-    for (int i = 0; i < templates.size(); i++) {
-        TemplateMap preprocessed;
-        for (auto itr = templates[i].templates.begin(); itr != templates[i].templates.begin(); itr++) {
+    vector<TemplateMap> preprocessedUserData;
+    //for each user
+    for (int i = 0; i < rawUserData.size(); i++) {
+        //for each gesture type in map
+        TemplateMap processed;
+        for (auto itr = rawUserData[i].templates.begin(); itr != rawUserData[i].templates.end(); itr++) {
             for (int j = 0; j < itr->second.size(); j++) {
+                cout << "preprocessing" << endl;
                 vector<Point> resampled;
                 resample(itr->second[j], 64, resampled);
                 //Rotation function calls
@@ -48,12 +52,16 @@ int main()
                 vector<Point> translated;
                 translated = TranslateTo(scaled, Point(200, 200));
                 //Add the template to the templatemap for the current user
-                preprocessed.addTemplate(itr->first, translated);
+                processed.addTemplate(itr->first, translated);
             }
         }
-        //add to vector containing all users' samples
-        preprocessedTemplates.push_back(preprocessed);
+        preprocessedUserData.push_back(processed);
     }
+
+
+    
+
+    cout << preprocessedUserData.size();
 
     return 0;
 }

@@ -9,4 +9,4 @@
 using boost::property_tree::ptree;
 using namespace std;
 
-void parseXML();
+void parseXML(vector<TemplateMap>& userTemplates);

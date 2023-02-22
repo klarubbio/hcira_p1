@@ -14,12 +14,12 @@ const ptree& empty_ptree() {
 	return t;
 }
 
-void parseXML() {
+void parseXML(vector<TemplateMap>& userTemplates) {
 	vector<string> users = { "s02", "s03", "s04", "s05", "s06", "s07", "s08", "s09", "s10", "s11" };
 	vector<string> speeds = { "slow", "medium", "fast" };
 	vector<string> gestures = { "arrow", "caret", "check", "circle", "delete_mark", "left_curly_brace", "left_sq_bracket", "pigtail", "question_mark", "rectangle", "right_curly_brace", "right_sq_bracket", "star", "triangle", "v", "x" };
 
-	vector<TemplateMap> userTemplates;
+	//vector<TemplateMap> userTemplates;
 
 	/* 
 	* testing to see where the file path should start (start at xml folder, not c drive)
@@ -45,7 +45,7 @@ void parseXML() {
 		}
 		string speed = speeds[0]; // slow, can choose whataver we like
 		string templateDirectory = userDirectory + "/" + speed;
-		cout << templateDirectory << endl;
+		//cout << templateDirectory << endl;
 
 		TemplateMap currentUserMap;
 
@@ -60,7 +60,7 @@ void parseXML() {
 				else {
 					gestureDirectory = gestureDirectory + std::to_string(k) + ".xml";
 				}
-				cout << gestureDirectory << endl;
+				//cout << gestureDirectory << endl;
 				vector<Point> curr_template = _template;
 
 
@@ -78,7 +78,7 @@ void parseXML() {
 					int i = 0;
 					Point p = Point(0,0);
 					BOOST_FOREACH(const ptree::value_type & value_type, attributes) {
-						cout << value_type.second.data() << endl; //ptree bad path thrown here
+						//cout << value_type.second.data() << endl; 
 						if (i == 0) {
 							// x value
 							p.x = stod(value_type.second.data());
@@ -96,13 +96,12 @@ void parseXML() {
 				//double b = child.second.get<double>("<xmlattr.Y");
 				//Point p = Point(a, b);
 				
-
-				currentUserMap.addTemplate(gestures[i], curr_template);
+				currentUserMap.addTemplate(gestures[j], curr_template);
 				gestureDirectory = templateDirectory + "/" + gestures[j];
 			}
 			
 		}
-		currentUserMap.printTemplateMap();
+		//currentUserMap.printTemplateMap();
 
 		userTemplates.push_back(currentUserMap);
 	}
