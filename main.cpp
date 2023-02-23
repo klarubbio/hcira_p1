@@ -38,7 +38,7 @@ int main()
     // Preprocess points from XML file and save to preprocessedTemplates data structure
     vector<TemplateMap> preprocessedUserData;
     //for each user
-    for (unsigned int i = 0; i < rawUserData.size(); i++) {
+    for (unsigned int i = 0; i < 1; i++) {
         //for each gesture type in map
         TemplateMap processed;
         for (auto itr = rawUserData[i].templates.begin(); itr != rawUserData[i].templates.end(); itr++) {
@@ -69,7 +69,7 @@ int main()
     vector<vector<string>> outputCSV;
 
     // for each user U = 1 to 10
-    for (unsigned int U = 0; U < rawUserData.size(); U++) {
+    for (unsigned int U = 0; U < 1; U++) {
         userAvg.push_back(pair<long, long>(0, 0));
 
         // for each example E = 1 to 9
@@ -142,25 +142,25 @@ int main()
 			
 		    // CODE FOR ADDING NAME OF GESTURE RECOGNIZED 
 			
-		    //vector<string> contentsOfSet;
-                    //string s = setContents.substr(1, contentsOfSet.size()-1);
-                    //boost::split(contentsOfSet, s, boost::is_any_of(" "), boost::token_compress_on);
-                    ////cout << contentsOfSet[0] << endl;
+		    vector<string> contentsOfSet;
+                    string s = setContents.substr(1, contentsOfSet.size()-1);
+                    boost::split(contentsOfSet, s, boost::is_any_of(" "), boost::token_compress_on);
+                    cout << contentsOfSet[0] << endl;
 
-                    //string recognizedAs;
+                    string recognizedAs;
 
-                    //for (int i = 0; i < contentsOfSet.size(); i++) {
-                    //    vector<string> parts;
-                    //    string gesture = contentsOfSet[i];
-                    //    boost::split(parts, gesture, boost::is_any_of("-"), boost::token_compress_on);
-                    //    string j = parts[1];
-                    //    if (j == result.first) {
-                    //        recognizedAs = "s0-" + j + "-" + parts[2];
-                    //        //cout << "R as: " << recognizedAs << endl;
-                    //        log.push_back(recognizedAs); // log what gesture was recognized as
-                    //        break;
-                    //    }
-                    //}
+                    for (int i = 0; i < contentsOfSet.size(); i++) {
+                        vector<string> parts;
+                        string gesture = contentsOfSet[i];
+                        boost::split(parts, gesture, boost::is_any_of("-"), boost::token_compress_on);
+                        string j = parts[1];
+                        if (j == result.first) {
+                            recognizedAs = "s0-" + j + "-" + parts[2];
+                            cout << "R as: " << recognizedAs << endl;
+                            log.push_back(recognizedAs); // log what gesture was recognized as
+                            break;
+                        }
+                    }
 			
                     g++;
 
@@ -177,6 +177,13 @@ int main()
 
         double average = ((double)userAvg[U].first) / (userAvg[U].first + userAvg[U].second);
         cout << "User " << U + 1 << " accuracy: " << average << endl;
+        vector<string> empty;
+        //empty line
+        outputCSV.push_back(empty);
+        vector<string> final;
+        final.push_back("TotalAvgAccuracy");
+        final.push_back(to_string(average));
+        outputCSV.push_back(final);
     }
 
     // write csv file
