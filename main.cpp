@@ -79,6 +79,7 @@ int main()
                 TemplateMap chosenGestureTemplates;
                 vector<pair<vector<Point>, int>> candidates;
                 string setContents = "{";
+                vector<string> namesInOrder;
 
                 // for each gesture type G
                 for (auto G = rawUserData[U].templates.begin(); G != rawUserData[U].templates.end(); G++) {
@@ -95,6 +96,7 @@ int main()
                             if (j < E) {
                                 chosenGestureTemplates.addTemplate(G->first, gestures[randInd]);
                                 setContents += "s0" + to_string(U + 2) + "-" + G->first + "-" + to_string(randInd) + " ";
+                                namesInOrder.push_back("s0" + to_string(U + 2) + "-" + G->first + "-" + to_string(randInd));
 
                             }
                             else {                  
@@ -114,7 +116,12 @@ int main()
                 // for each candidate T (templates[E]) recognize with E (templates[0 to E])
                 for (auto G = rawUserData[U].templates.begin(); G != rawUserData[U].templates.end(); G++) {
                     // prepare a vector of strings for csv output
-                    pair<string, double> result = Recognize(candidates[g].first, chosenGestureTemplates);
+                    map<double, string> nBest;
+                    string participant = "s0" + to_string(U + 2) + "-";
+                    string templateName = G->first;
+
+                    pair<string, double> result = Recognize(candidates[g].first, chosenGestureTemplates, nBest, namesInOrder);
+                    //cout << "n best size " << nBest.size() << endl;
 
                     vector<string> log;
                     log.push_back("s0" + to_string(U + 2)); // log user
@@ -142,10 +149,10 @@ int main()
 			
 		    // CODE FOR ADDING NAME OF GESTURE RECOGNIZED 
 			
-		    vector<string> contentsOfSet;
+		            vector<string> contentsOfSet;
                     string s = setContents.substr(1, contentsOfSet.size()-1);
                     boost::split(contentsOfSet, s, boost::is_any_of(" "), boost::token_compress_on);
-                    cout << contentsOfSet[0] << endl;
+                    //cout << contentsOfSet[0] << endl;
 
                     string recognizedAs;
 
@@ -155,12 +162,24 @@ int main()
                         boost::split(parts, gesture, boost::is_any_of("-"), boost::token_compress_on);
                         string j = parts[1];
                         if (j == result.first) {
-                            recognizedAs = "s0-" + j + "-" + parts[2];
-                            cout << "R as: " << recognizedAs << endl;
+                            recognizedAs = "s0" + to_string(U+2) + "-" + j + "-" + parts[2];
+                            //cout << "R as: " << recognizedAs << endl;
                             log.push_back(recognizedAs); // log what gesture was recognized as
                             break;
                         }
                     }
+
+                    string nBestString = "{";
+                    int i = 0;
+                    for (auto itr = nBest.begin(); itr != nBest.end(); itr++) {
+                        if (i < 50) {
+                            nBestString += itr->second;
+                            nBestString += to_string(itr->first);
+                        }
+                        i++;
+                    }
+                    nBestString += "}";
+                    log.push_back(nBestString);
 			
                     g++;
 
