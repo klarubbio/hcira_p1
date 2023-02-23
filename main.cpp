@@ -174,7 +174,9 @@ int main()
                     for (auto itr = nBest.begin(); itr != nBest.end(); itr++) {
                         if (i < 50) {
                             nBestString += itr->second;
+                            nBestString += "','";
                             nBestString += to_string(itr->first);
+                            nBestString += "','";
                         }
                         i++;
                     }
