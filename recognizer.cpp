@@ -37,8 +37,8 @@ void resample(vector<Point>& points,  int n, vector<Point>& resampled) {
 	}
 	
 	if (resampled.size() < n) {
-		cout << "Current distance from last point: " << distFromResampled << endl;
-		cout << "Target distance between points: " << resampledDistance << endl;
+		//cout << "Current distance from last point: " << distFromResampled << endl;
+		//cout << "Target distance between points: " << resampledDistance << endl;
 		resampled.push_back(points[points.size() - 1]);
 	}
 }
@@ -167,7 +167,7 @@ pair<string, double> Recognize(vector<Point>& points, TemplateMap templates) {
 		}
 	}
 
-	double score = 1 - (best / 0.5 * (sqrt(pow(400, 2) + pow(400, 2))));
+	double score = 1 - (best / (0.5 * sqrt(pow(400, 2) + pow(400, 2))));
 	//return best score and corresponding template name
 	return make_pair(bestName, score);
 }

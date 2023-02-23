@@ -41,7 +41,7 @@ int main()
         TemplateMap processed;
         for (auto itr = rawUserData[i].templates.begin(); itr != rawUserData[i].templates.end(); itr++) {
             for (unsigned int j = 0; j < itr->second.size(); j++) {
-                cout << "preprocessing" << endl;
+                //cout << "preprocessing" << endl;
                 vector<Point> resampled;
                 resample(itr->second[j], 64, resampled);
                 //Rotation function calls
