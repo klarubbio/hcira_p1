@@ -20,6 +20,7 @@ Working on Visual Studio 2019 with SFML for VS C++ 15
 
 # Part 3
 ### Read in Dataset
+main.cpp - Lines 35-37 & parseXML() function - This function parses the XML logs folder using the boost library to fill in a vector of TemplateMap objects. It navigates between the file directory and subdirectories in order to get the data from all 10 users for every gesture. Each user has their own TemplateMap, and their XML data is stored within the TemplateMap.
 ### Connect to Recognizer
 main.cpp - Lines 36-59 - The data structure containing the raw user data is looped through. A new data structure (vector<TemplateMap> preprocessedUserData) is created to hold the preprocessed data which will be used for recognition while maintaining raw data points. The functions from the recognizer in recognizer.cpp (resample, rotateToZero, scaleTo, translateTo) are called on each point. Each user's data is represented as a TemplateMap within the vector, which contains their respective samples for each gesture type. 
 ### Loop over Dataset
