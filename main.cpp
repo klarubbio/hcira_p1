@@ -11,6 +11,7 @@ Spring 2023
 #include <iterator>
 #include <algorithm>
 #include <vector>
+#include <fstream>
 #include "TemplateMap.h"
 #include "fillTemplateMap.h"
 #include "recognizer.h"
@@ -35,11 +36,11 @@ int main()
     // Preprocess points from XML file and save to preprocessedTemplates data structure
     vector<TemplateMap> preprocessedUserData;
     //for each user
-    for (int i = 0; i < rawUserData.size(); i++) {
+    for (unsigned int i = 0; i < rawUserData.size(); i++) {
         //for each gesture type in map
         TemplateMap processed;
         for (auto itr = rawUserData[i].templates.begin(); itr != rawUserData[i].templates.end(); itr++) {
-            for (int j = 0; j < itr->second.size(); j++) {
+            for (unsigned int j = 0; j < itr->second.size(); j++) {
                 cout << "preprocessing" << endl;
                 vector<Point> resampled;
                 resample(itr->second[j], 64, resampled);
@@ -60,20 +61,22 @@ int main()
 
     cout << preprocessedUserData.size() << endl;
 
-    // LOOP OVER DATASET
+    // LOOP OVER DATASET, OUTPUT THE RESULT
     vector<vector<double>> recoScores(rawUserData.size(), vector<double>(rawUserData[0].templates.size(), 0));
-    vector<pair<int, int>> userAvg;
+    vector<pair<long, long>> userAvg;
+    vector<vector<string>> outputCSV;
 
     // for each user U = 1 to 10
-    for (int U = 0; U < rawUserData.size(); U++) {
-        userAvg.push_back(pair<int, int>(0, 0));
+    for (unsigned int U = 0; U < rawUserData.size(); U++) {
+        userAvg.push_back(pair<long, long>(0, 0));
 
         // for each example E = 1 to 9
         for (int E = 1; E < 10; E++) {
             
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < 10; i++) {
                 TemplateMap chosenGestureTemplates;
-                vector<vector<Point>> candidates;
+                vector<pair<vector<Point>, int>> candidates;
+                string setContents = "{";
 
                 // for each gesture type G
                 for (auto G = rawUserData[U].templates.begin(); G != rawUserData[U].templates.end(); G++) {
@@ -89,11 +92,14 @@ int main()
                         if (!alreadyChose[randInd]) {
                             if (j < E) {
                                 chosenGestureTemplates.addTemplate(G->first, gestures[randInd]);
+                                setContents += "s0" + to_string(U + 2) + "-" + G->first + "-" + to_string(randInd) + ",";
 
                             }
                             else {
+                                setContents = setContents.substr(0, setContents.size() - 1) + "}";
+                   
                                 // last iteration, this is the candidate
-                                candidates.push_back(gestures[randInd]);
+                                candidates.push_back(pair<vector<Point>, int>(gestures[randInd], randInd));
 
                             }
 
@@ -107,29 +113,59 @@ int main()
                 int g = 0;
                 // for each candidate T (templates[E]) recognize with E (templates[0 to E])
                 for (auto G = rawUserData[U].templates.begin(); G != rawUserData[U].templates.end(); G++) {
+                    // prepare a vector of strings for csv output
+                    pair<string, double> result = Recognize(candidates[g].first, chosenGestureTemplates);
+
+                    vector<string> log;
+                    log.push_back("s0" + to_string(U + 2)); // log user
+                    log.push_back(G->first); // log gesture
+                    log.push_back(to_string(i)); // log iteration
+                    log.push_back(to_string(E)); // log num examples
+                    log.push_back(to_string(rawUserData.size())); // log size of training set
+                    log.push_back(setContents); // log the contents of the set
+                    log.push_back("s0" + to_string(U + 2) + "-" + G->first + to_string(candidates[g].second)); // log the candidate
+                    log.push_back(result.first); // log the result of the recognizer
+
                     // reco score for each U,G += 1
-                    if ((G->first).compare(Recognize(candidates[g], chosenGestureTemplates).first) == 0) {
+                    if ((G->first).compare(result.first) == 0) {
                         recoScores[U][g]++;
                         userAvg[U].first++;
+                        log.push_back("1"); // log success
 
                     } else {
                         userAvg[U].second++;
+                        log.push_back("0"); // log fail
 
                     }
 
+                    log.push_back(to_string(result.second)); // log recognizer score
                     g++;
+
+                    // add log to output CVS file
+                    outputCSV.push_back(log);
                 }
             }
 
-            // reco score for each U,G /= 100
-            for (int i = 0; i < rawUserData[U].templates.size(); i++) {
-                recoScores[U][i] /= 100.0;
+            // reco score for each U,G /= 10
+            for (unsigned int i = 0; i < rawUserData[U].templates.size(); i++) {
+                recoScores[U][i] /= 10.0;
             }
         }
 
         double average = ((double)userAvg[U].first) / (userAvg[U].first + userAvg[U].second);
         cout << "User " << U + 1 << " accuracy: " << average << endl;
     }
+
+    // write csv file
+    ofstream myfile;
+    myfile.open("output.csv");
+    for (int i = 0; i < outputCSV.size(); i++) {
+        for (int j = 0; j < outputCSV.at(i).size(); j++) {
+            myfile << outputCSV.at(i).at(j) + ",";
+        }
+        myfile << "\n";
+    }
+    myfile.close();
 
     return 0;
 }
