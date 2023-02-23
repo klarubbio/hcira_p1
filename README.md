@@ -24,7 +24,9 @@ main.cpp - Lines 35-37 & parseXML() function - This function parses the XML logs
 ### Connect to Recognizer
 main.cpp - Lines 36-59 - The data structure containing the raw user data is looped through. A new data structure (vector<TemplateMap> preprocessedUserData) is created to hold the preprocessed data which will be used for recognition while maintaining raw data points. The functions from the recognizer in recognizer.cpp (resample, rotateToZero, scaleTo, translateTo) are called on each point. Each user's data is represented as a TemplateMap within the vector, which contains their respective samples for each gesture type. 
 ### Loop over Dataset
+main.cpp - Lines 64-204 - For each user, the code will choose 1 to 9 random examples per gesture from the user and iterate 10 times through each gesture, and choose candidate gestures. The candidate gestures are run through the recognizer with the set of all random examles of each gesture for each user. For each run of the recognizer, a log is saved in a vector of vectors of strings.
 ### Output the Result
+main.cpp Lines 114-217 - Each log entry is a vector of strings, each value in the vector will be a column attribute in the CSV. After a log entry has been completed for each call to the recognizer, it gets added to our vector of vectors of strings. This object is looped through at the end of the program and each log entry is written with its values comma seperated and a new line at the end of every log entry.
 
 
 ## Part 2: Online/Live Recognition
