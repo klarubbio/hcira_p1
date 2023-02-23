@@ -31,14 +31,13 @@ int main()
     std::for_each(
         in(std::cin), in(), std::cout << (_1 * 3) << " ");*/
     vector<TemplateMap> rawUserData;
-    parseXML(rawUserData);
-    cout << rawUserData.size();
+    //parseXML(rawUserData);
     //FILL FROM XML HERE
 
     // Preprocess points from XML file and save to preprocessedTemplates data structure
     vector<TemplateMap> preprocessedUserData;
     //for each user
-    for (unsigned int i = 0; i < 1; i++) {
+    for (unsigned int i = 0; i < 10; i++) {
         //for each gesture type in map
         TemplateMap processed;
         for (auto itr = rawUserData[i].templates.begin(); itr != rawUserData[i].templates.end(); itr++) {
@@ -61,15 +60,13 @@ int main()
         preprocessedUserData.push_back(processed);
     }
 
-    cout << preprocessedUserData.size() << endl;
-
     // LOOP OVER DATASET, OUTPUT THE RESULT
     vector<vector<double>> recoScores(rawUserData.size(), vector<double>(rawUserData[0].templates.size(), 0));
     vector<pair<long, long>> userAvg;
     vector<vector<string>> outputCSV;
 
     // for each user U = 1 to 10
-    for (unsigned int U = 0; U < 1; U++) {
+    for (unsigned int U = 0; U < 10; U++) {
         userAvg.push_back(pair<long, long>(0, 0));
 
         // for each example E = 1 to 9
