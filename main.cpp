@@ -92,12 +92,10 @@ int main()
                         if (!alreadyChose[randInd]) {
                             if (j < E) {
                                 chosenGestureTemplates.addTemplate(G->first, gestures[randInd]);
-                                setContents += "s0" + to_string(U + 2) + "-" + G->first + "-" + to_string(randInd) + ",";
+                                setContents += "s0" + to_string(U + 2) + "-" + G->first + "-" + to_string(randInd) + " ";
 
                             }
-                            else {
-                                setContents = setContents.substr(0, setContents.size() - 1) + "}";
-                   
+                            else {                  
                                 // last iteration, this is the candidate
                                 candidates.push_back(pair<vector<Point>, int>(gestures[randInd], randInd));
 
@@ -122,7 +120,7 @@ int main()
                     log.push_back(to_string(i)); // log iteration
                     log.push_back(to_string(E)); // log num examples
                     log.push_back(to_string(rawUserData.size())); // log size of training set
-                    log.push_back(setContents); // log the contents of the set
+                    log.push_back(setContents.substr(0, setContents.size() - 1) + "}"); // log the contents of the set
                     log.push_back("s0" + to_string(U + 2) + "-" + G->first + to_string(candidates[g].second)); // log the candidate
                     log.push_back(result.first); // log the result of the recognizer
 
@@ -159,6 +157,7 @@ int main()
     // write csv file
     ofstream myfile;
     myfile.open("output.csv");
+    myfile << "User[all-users],GestureType[all-gestures-types],RandomIteration[1to100],#ofTrainingExamples[E],TotalSizeOfTrainingSet[count],TrainingSetContents[specific-gesture-instances],Candidate[specific-instance],RecoResultGestureType[what-was-recognized],CorrectIncorrect[1or0],RecoResultScore,RecoResultBestMatch[specific-instance],RecoResultNBestSorted[instance-and-score]\n";
     for (int i = 0; i < outputCSV.size(); i++) {
         for (int j = 0; j < outputCSV.at(i).size(); j++) {
             myfile << outputCSV.at(i).at(j) + ",";
