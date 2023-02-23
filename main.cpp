@@ -7,6 +7,8 @@ Spring 2023
 
 #include <SFML/Graphics.hpp>
 #include <boost/lambda/lambda.hpp>
+#include <boost/algorithm/string/classification.hpp> // Include boost::for is_any_of
+#include <boost/algorithm/string/split.hpp> // Include for boost::split
 #include <iostream>
 #include <iterator>
 #include <algorithm>
@@ -137,6 +139,29 @@ int main()
                     }
 
                     log.push_back(to_string(result.second)); // log recognizer score
+			
+		    // CODE FOR ADDING NAME OF GESTURE RECOGNIZED 
+			
+		    //vector<string> contentsOfSet;
+                    //string s = setContents.substr(1, contentsOfSet.size()-1);
+                    //boost::split(contentsOfSet, s, boost::is_any_of(" "), boost::token_compress_on);
+                    ////cout << contentsOfSet[0] << endl;
+
+                    //string recognizedAs;
+
+                    //for (int i = 0; i < contentsOfSet.size(); i++) {
+                    //    vector<string> parts;
+                    //    string gesture = contentsOfSet[i];
+                    //    boost::split(parts, gesture, boost::is_any_of("-"), boost::token_compress_on);
+                    //    string j = parts[1];
+                    //    if (j == result.first) {
+                    //        recognizedAs = "s0-" + j + "-" + parts[2];
+                    //        //cout << "R as: " << recognizedAs << endl;
+                    //        log.push_back(recognizedAs); // log what gesture was recognized as
+                    //        break;
+                    //    }
+                    //}
+			
                     g++;
 
                     // add log to output CVS file
