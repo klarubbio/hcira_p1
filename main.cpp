@@ -14,6 +14,8 @@ Spring 2023
 #include <algorithm>
 #include <vector>
 #include <fstream>
+#include <stdio.h>
+#include <time.h>
 #include "TemplateMap.h"
 #include "fillTemplateMap.h"
 #include "recognizer.h"
@@ -229,7 +231,7 @@ int main()
     
     
     int width = 800;
-    int height = 400;
+    int height = 450;
 
     sf::RenderWindow window(sf::VideoMode(width, height), "Canvas");
     sf::Texture clearBtn;
@@ -238,7 +240,8 @@ int main()
     sf::Sprite clearBtnSprite;
     sf::Sprite gestureExamplesSprite;
     sf::Font outputFont;
-    sf::Text outputText;
+    sf::Text inputText;
+    sf::Text instructions;
 
     window.setFramerateLimit(1000);
 
@@ -259,16 +262,21 @@ int main()
         std::cout << "failed to load gestures.jpg";
     }
 
-    clearBtnSprite.setPosition(300, 350);
+    clearBtnSprite.setPosition(300, 400);
     clearBtnSprite.setTexture(clearBtn);
 
-    gestureExamplesSprite.setPosition(400, 0);
+    gestureExamplesSprite.setPosition(400, 50);
     gestureExamplesSprite.setTexture(gestureExamples);
 
-    outputText.setPosition(0, 375);
-    outputText.setFont(outputFont);
-    outputText.setCharacterSize(24);
-    outputText.setFillColor(sf::Color::Blue);
+    inputText.setPosition(10, 0);
+    inputText.setFont(outputFont);
+    inputText.setCharacterSize(24);
+    inputText.setFillColor(sf::Color::Blue);
+
+    instructions.setPosition(10, 30);
+    instructions.setFont(outputFont);
+    instructions.setCharacterSize(12);
+    instructions.setFillColor(sf::Color::Blue);
 
     //tracks actual points drawn
     //sf::VertexArray vertices(sf::LineStrip);
@@ -278,8 +286,27 @@ int main()
     sf::Vector2f last;
     bool drawing = false;
 
+
+    string gestures[]= { "arrow", "caret", "check", "circle", "delete mark", "left curly brace", "left square bracket", "pigtail", "rectangle", "right curly brace", "right square bracket", "star", "triangle", "v", "x", "zig-zag"};
+    vector<string> randGestures;
+    //setup for gesture prompts
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 16; j++) {
+            randGestures.push_back(gestures[j]);
+        }
+    }
+    srand(time(NULL));
+    int currGesture = rand() % randGestures.size();
+
+
     while (window.isOpen())
     {
+        
+
+        inputText.setString("Draw gesture: " + randGestures[currGesture]);
+        instructions.setString("Draw the prompted gesture. Press enter to proceed to the next gesture, or press clear to try again.");
+
+
         sf::Event event;
 
         while (window.pollEvent(event))
@@ -290,7 +317,7 @@ int main()
             //visualize first point of contact
             else if (event.type == sf::Event::MouseButtonPressed) {
                 // if pressed clear btn, do not draw
-                if (event.mouseButton.x >= 300 && event.mouseButton.y >= 350) {
+                if (event.mouseButton.x >= 300 && event.mouseButton.y >= 400) {
                     clearBtnSprite.setTexture(clearBtnPressed);
                 }
                 else {
@@ -305,68 +332,45 @@ int main()
             }
             //connect additional points of contact
             else if (event.type == sf::Event::MouseMoved && drawing) {
-                const sf::Vector2f next(window.mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y)));
-                vertices.push_back(sf::Vertex(next, sf::Color(0, 0, 0)));
-                last = next;
-                break;
+                if (event.mouseMove.x <= 400 && event.mouseMove.y > 50) {
+                    const sf::Vector2f next(window.mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y)));
+                    vertices.push_back(sf::Vertex(next, sf::Color(0, 0, 0)));
+                    last = next;
+                    break;
+                }
+                else {
+                    drawing = false;
+                }
+            }
+            //use enter to finish drawing
+            else if (event.type == sf::Event::KeyReleased) {
+                if (event.key.code == sf::Keyboard::Enter) {
+                    //collect points - write to xml here
+                    for (int i = 0; i < vertices.size(); i++) {
+                        shape.push_back(Point(vertices[i].position.x, vertices[i].position.y));
+                    }
+                    //clear window points
+                    clearBtnSprite.setTexture(clearBtn);
+                    vertices.clear();
+                    resampledVisualization.clear();
+                    randGestures.erase(randGestures.begin() + currGesture);
+                    currGesture = rand() % randGestures.size();
+                    inputText.setString("Draw gesture: " + randGestures[currGesture]);
+                }
             }
             else if (event.type == sf::Event::MouseButtonReleased) {
                 if (drawing) {
-                    // collect name of gesture from user
-                    sf::RenderWindow window2(sf::VideoMode(width, 50), "Gesture Name");
-                    sf::Text inputText;
-                    string inputString = "";
                     
-                    inputText.setPosition(10, 0);
-                    inputText.setFont(outputFont);
-                    inputText.setCharacterSize(24);
-                    inputText.setFillColor(sf::Color::Blue);
                     
-                    while (window2.isOpen()) {
-                        while (window2.pollEvent(event)) {
-                            if (event.type == sf::Event::Closed) {
-                                window2.close();
-
-                            }
-                            else if (event.type == sf::Event::TextEntered) {
-                                if (event.text.unicode < 128) {
-                                    // handle backspace
-                                    if (event.text.unicode == 8) {
-                                        if (inputString.size() > 0) {
-                                            inputString = inputString.substr(0, inputString.size() - 1);
-
-                                        }
-
-                                    } // handle enter
-                                    else if (event.text.unicode == 13) {
-                                        window2.close();
-
-                                    } // handle all other chars
-                                    else {
-                                        inputString += static_cast<char>(event.text.unicode);
-                                    }
-                                }
-                            }
-                        }
-
-                        inputText.setString("What is the gesture (press [Enter] when done): " + inputString);
-
-                        window2.clear(sf::Color(255, 255, 255));
-                        window2.draw(inputText);
-                        window2.display();
-                    }
-
-                    cout << "User typed: " << inputString << endl;
-
                     drawing = false;
-                    Point origin = Point(0, 0);
+                    /*Point origin = Point(0, 0);
                     for (int i = 0; i < vertices.size(); i++) {
                         shape.push_back(Point(vertices[i].position.x, vertices[i].position.y));
                         //cout << "Test: Distance from origin: " << shape.at(i).distance(origin) << endl;
                         //cout << vertices[i].position.x << " " << vertices[i].position.y << endl;
                     }
 
-                    /* ============ RECOGNIZING DATA ========= commented out for part 4
+                    ============ RECOGNIZING DATA ========= commented out for part 4
                     
                     //Resampling function calls
                     vector<Point> resampled;
@@ -396,11 +400,12 @@ int main()
 
                 // if mouse btn released outside of clear btn, do not clear 
                 }
-                else if (clearBtnSprite.getTexture() == &clearBtnPressed && (event.mouseButton.x < 300 || event.mouseButton.y < 350)) {
+                else if (clearBtnSprite.getTexture() == &clearBtnPressed && (event.mouseButton.x < 300 || event.mouseButton.y < 400)) {
                     clearBtnSprite.setTexture(clearBtn);;
                 }
                 // clear
-                else if (clearBtnSprite.getTexture() == &clearBtnPressed && event.mouseButton.x >= 300 && event.mouseButton.y >= 350) {
+                else if (clearBtnSprite.getTexture() == &clearBtnPressed && event.mouseButton.x >= 300 && event.mouseButton.y >= 400) {
+                    
                     clearBtnSprite.setTexture(clearBtn);
                     vertices.clear();
                     resampledVisualization.clear();
@@ -412,7 +417,8 @@ int main()
         window.clear(sf::Color(255,255,255));
         window.draw(clearBtnSprite);
         window.draw(gestureExamplesSprite);
-        window.draw(outputText);
+        window.draw(inputText);
+        window.draw(instructions);
 
         //draw only actual points recorded and lines in between
         if (!vertices.empty() && resampledVisualization.empty()) {
@@ -428,6 +434,7 @@ int main()
         window.display();
 
     }
+
     
                 return 0;
 
