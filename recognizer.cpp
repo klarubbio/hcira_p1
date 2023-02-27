@@ -170,8 +170,9 @@ pair<string, double> Recognize(vector<Point>& points, TemplateMap templates, map
 				distance = (distance / (0.5 * sqrt(pow(400, 2) + pow(400, 2))));
 				nBest[distance] = inOrder[counter];
 			}
+			counter++;
 		}
-		counter++;
+		
 	}
 
 	double score = (best / (0.5 * sqrt(pow(400, 2) + pow(400, 2))));

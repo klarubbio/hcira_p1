@@ -32,15 +32,15 @@ int main()
         in(std::cin), in(), std::cout << (_1 * 3) << " ");*/
 
         // ============== REMOVE COMMENT BLOCK FOR PART 3 =============
-
-        /*vector<TemplateMap> rawUserData;
-        //parseXML(rawUserData);
+    /*
+        vector<TemplateMap> rawUserData;
+        parseXML(rawUserData);
         //FILL FROM XML HERE
 
         // Preprocess points from XML file and save to preprocessedTemplates data structure
         vector<TemplateMap> preprocessedUserData;
         //for each user
-        for (unsigned int i = 0; i < 10; i++) {
+        for (unsigned int i = 0; i < 1; i++) {
             //for each gesture type in map
             TemplateMap processed;
             for (auto itr = rawUserData[i].templates.begin(); itr != rawUserData[i].templates.end(); itr++) {
@@ -69,7 +69,7 @@ int main()
         vector<vector<string>> outputCSV;
 
         // for each user U = 1 to 10
-        for (unsigned int U = 0; U < 10; U++) {
+        for (unsigned int U = 0; U < 1; U++) {
             userAvg.push_back(pair<long, long>(0, 0));
 
             // for each example E = 1 to 9
@@ -220,9 +220,9 @@ int main()
         myfile.close();
 
         return 0;
-    }*/
+    }
 
-
+*/
     vector<Point> shape;
 	//fillTemplateMap(templateMap, preprocessedTemplates);
     //templateMap.printTemplateMap();
@@ -394,7 +394,7 @@ int main()
                     // REMOVE COMMENT TO USE GUI break;
                 //}
 
-                // if mouse btn released outside of clear btn, do not clear
+                // if mouse btn released outside of clear btn, do not clear 
                 }
                 else if (clearBtnSprite.getTexture() == &clearBtnPressed && (event.mouseButton.x < 300 || event.mouseButton.y < 350)) {
                     clearBtnSprite.setTexture(clearBtn);;
