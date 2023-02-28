@@ -371,7 +371,7 @@ int main()
 
                     numRecordings++;
 
-                    if (numRecordings == 10) { // user has drawn 10 examples of all 16 gestures
+                    if (numRecordings == 160) { // user has drawn 10 examples of all 16 gestures
                         // turn to xml, should be 160 just using 1 to test
                         cout << "starting conversion" << endl;
                         
