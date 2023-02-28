@@ -9,6 +9,9 @@ Spring 2023
 #include <boost/lambda/lambda.hpp>
 #include <boost/algorithm/string/classification.hpp> // Include boost::for is_any_of
 #include <boost/algorithm/string/split.hpp> // Include for boost::split
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+#include <boost/foreach.hpp>
 #include <iostream>
 #include <iterator>
 #include <algorithm>
@@ -25,6 +28,7 @@ using namespace std;
 
 int main()
 {
+    using boost::property_tree::ptree;  
     /*
     // boost sanity check (test this after installing boost library by typing "1 2 3")
     using namespace boost::lambda;
@@ -225,7 +229,6 @@ int main()
     }
 
 */
-    vector<Point> shape;
 	//fillTemplateMap(templateMap, preprocessedTemplates);
     //templateMap.printTemplateMap();
     
@@ -272,10 +275,11 @@ int main()
     inputText.setFont(outputFont);
     inputText.setCharacterSize(24);
     inputText.setFillColor(sf::Color::Blue);
+    inputText.setString("Test");
 
     instructions.setPosition(10, 30);
     instructions.setFont(outputFont);
-    instructions.setCharacterSize(12);
+    instructions.setCharacterSize(16);
     instructions.setFillColor(sf::Color::Blue);
 
     //tracks actual points drawn
@@ -287,7 +291,7 @@ int main()
     bool drawing = false;
 
 
-    string gestures[]= { "arrow", "caret", "check", "circle", "delete mark", "left curly brace", "left square bracket", "pigtail", "rectangle", "right curly brace", "right square bracket", "star", "triangle", "v", "x", "zig-zag"};
+    vector<string> gestures = { "arrow", "caret", "check", "circle", "delete mark", "left curly brace", "left square bracket", "pigtail", "rectangle", "right curly brace", "right square bracket", "star", "triangle", "v", "x", "zig-zag"};
     vector<string> randGestures;
     //setup for gesture prompts
     for (int i = 0; i < 10; i++) {
@@ -297,6 +301,10 @@ int main()
     }
     srand(time(NULL));
     int currGesture = rand() % randGestures.size();
+
+    TemplateMap userMap;
+    vector<Point> shape;
+    int numRecordings = 0;
 
 
     while (window.isOpen())
@@ -349,13 +357,61 @@ int main()
                     for (int i = 0; i < vertices.size(); i++) {
                         shape.push_back(Point(vertices[i].position.x, vertices[i].position.y));
                     }
+                    userMap.addTemplate(gestures[currGesture], shape);
+                    userMap.printTemplateMap();
                     //clear window points
                     clearBtnSprite.setTexture(clearBtn);
                     vertices.clear();
                     resampledVisualization.clear();
+                    
+                    inputText.setString("Draw gesture: " + randGestures[currGesture]);
+
+                    numRecordings++;
+
+                    if (numRecordings == 1) { // user has drawn 10 examples of all 16 gestures
+                        // turn to xml, should be 160 just using 1 to test
+                        
+                        for (int i = 0; i < gestures.size(); i++) {
+                            vector<vector<Point>> temp = userMap.templates[randGestures[currGesture]]; // should be gestures[i]
+                            
+                            for (int j = 0; j < temp.size(); j++) {
+                                
+                                
+                                //pt.add("<xmlattr>.Name", randGestures[currGesture]);
+
+                                //ptree p;
+                                //p.clear();
+
+                                ptree pt;
+                                pt.clear();
+
+                                for (int k = 0; k < temp[j].size(); k++) {
+                                   ptree ptt;
+                                   ptt.clear();
+                                   //ptree pts;
+                                   ptt.add("<xmlattr>.X", temp[j][k].x);
+                                   ptt.add("<xmlattr>.Y", temp[j][k].y);
+                                   pt.add_child("Point", ptt);
+                                }
+
+                                
+                                //ptt.clear();
+                                //ptt.add("<xmlattr>.Name", gestures[i]);
+                                boost::property_tree::ptree pts;
+                                pts.clear();
+                                pts.add_child("Gesture", pt);
+                                
+                                write_xml("test.xml", pts);
+                                cout << "done" << endl;
+                            }
+                            
+                        }
+                        
+
+                    }
+
                     randGestures.erase(randGestures.begin() + currGesture);
                     currGesture = rand() % randGestures.size();
-                    inputText.setString("Draw gesture: " + randGestures[currGesture]);
                 }
             }
             else if (event.type == sf::Event::MouseButtonReleased) {
@@ -435,8 +491,7 @@ int main()
 
     }
 
-    
-                return 0;
+    return 0;
 
     
 }
