@@ -390,26 +390,47 @@ int main()
                                 pt.clear();
 
                                 for (int k = 0; k < temp[j].size(); k++) {
-                                   ptree ptt;
-                                   ptt.clear();
-                                   //ptree pts;
-                                   ptt.add("<xmlattr>.X", temp[j][k].x);
-                                   ptt.add("<xmlattr>.Y", temp[j][k].y);
-                                   pt.add_child("Point", ptt);
+                                     ptree ptt;
+                                     ptt.clear();
+                                     //ptree pts;
+                                     ptt.add("<xmlattr>.X", temp[j][k].x);
+                                     ptt.add("<xmlattr>.Y", temp[j][k].y);
+                                     pt.add_child("Point", ptt);
                                 }
 
+                                string tempName = gestures[i];
+                                vector<string> tempNameResult;
+                                boost::split(tempNameResult, tempName, boost::is_any_of(" "));
+                                string name = "";
+
+                                if (tempNameResult.size() > 0) {
+                                    for (int l = 0; l < tempNameResult.size(); l++) {
+                                        if (l < tempNameResult.size() - 1) {
+                                            name += tempNameResult[i] + "_";
+                                        }
+                                        else {
+                                            name += tempNameResult[i];
+                                        }
+                                    }
+                                }
+                                else {
+                                    name = tempName;
+                                }
                                 
                                 //ptt.clear();
                                 //ptt.add("<xmlattr>.Name", gestures[i]);
                                 boost::property_tree::ptree pts;
                                 pts.clear();
+                                pt.put("<xmlattr>.Name", name + to_string(j + 1));
                                 pts.add_child("Gesture", pt);
 
-                                string tempName = gestures[i];
                                 
-                                cout << tempName << endl;
-                                cout << tempName + to_string(j + 1) + ".xml" << endl;
-                                write_xml("xml/" + tempName + to_string(j + 1) + ".xml", pts);
+
+                                
+                                
+                                cout << name << endl;
+                                cout << name + to_string(j + 1) + ".xml" << endl;
+                                write_xml("xml/" + name + to_string(j + 1) + ".xml", pts);
                                 cout << "done" << endl;
                             }
                             
