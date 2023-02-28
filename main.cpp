@@ -371,7 +371,7 @@ int main()
 
                     numRecordings++;
 
-                    if (numRecordings == 160) { // user has drawn 10 examples of all 16 gestures
+                    if (numRecordings == 10) { // user has drawn 10 examples of all 16 gestures
                         // turn to xml, should be 160 just using 1 to test
                         cout << "starting conversion" << endl;
                         
@@ -406,22 +406,29 @@ int main()
                                 if (tempNameResult.size() > 0) {
                                     for (int l = 0; l < tempNameResult.size(); l++) {
                                         if (l < tempNameResult.size() - 1) {
-                                            name += tempNameResult[i] + "_";
+                                            name += tempNameResult[l] + "_";
                                         }
                                         else {
-                                            name += tempNameResult[i];
+                                            name += tempNameResult[l];
                                         }
                                     }
                                 }
                                 else {
                                     name = tempName;
                                 }
+
+                                if (j + 1 < 10) {
+                                    name += "0" + to_string(j + 1);
+                                }
+                                else {
+                                    name += to_string(j + 1);
+                                }
                                 
                                 //ptt.clear();
                                 //ptt.add("<xmlattr>.Name", gestures[i]);
                                 boost::property_tree::ptree pts;
                                 pts.clear();
-                                pt.put("<xmlattr>.Name", name + to_string(j + 1));
+                                pt.put("<xmlattr>.Name", name);
                                 pts.add_child("Gesture", pt);
 
                                 
@@ -429,8 +436,8 @@ int main()
                                 
                                 
                                 cout << name << endl;
-                                cout << name + to_string(j + 1) + ".xml" << endl;
-                                write_xml("xml/" + name + to_string(j + 1) + ".xml", pts);
+                                cout << name + ".xml" << endl;
+                                write_xml("xml/" + name + ".xml", pts);
                                 cout << "done" << endl;
                             }
                             
