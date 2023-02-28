@@ -357,8 +357,11 @@ int main()
                     for (int i = 0; i < vertices.size(); i++) {
                         shape.push_back(Point(vertices[i].position.x, vertices[i].position.y));
                     }
-                    userMap.addTemplate(gestures[currGesture], shape);
-                    userMap.printTemplateMap();
+                    cout << "Curr: " << currGesture << endl;
+                    cout << "Size: " << randGestures.size() << endl;
+                    cout << "Gesture: " << randGestures[currGesture] << endl;
+                    userMap.addTemplate(randGestures[currGesture], shape);
+                    //userMap.printTemplateMap();
                     //clear window points
                     clearBtnSprite.setTexture(clearBtn);
                     vertices.clear();
@@ -368,11 +371,12 @@ int main()
 
                     numRecordings++;
 
-                    if (numRecordings == 1) { // user has drawn 10 examples of all 16 gestures
+                    if (numRecordings == 160) { // user has drawn 10 examples of all 16 gestures
                         // turn to xml, should be 160 just using 1 to test
+                        cout << "starting conversion" << endl;
                         
                         for (int i = 0; i < gestures.size(); i++) {
-                            vector<vector<Point>> temp = userMap.templates[randGestures[currGesture]]; // should be gestures[i]
+                            vector<vector<Point>> temp = userMap.templates[gestures[i]]; // should be gestures[i]
                             
                             for (int j = 0; j < temp.size(); j++) {
                                 
@@ -400,8 +404,12 @@ int main()
                                 boost::property_tree::ptree pts;
                                 pts.clear();
                                 pts.add_child("Gesture", pt);
+
+                                string tempName = gestures[i];
                                 
-                                write_xml("test.xml", pts);
+                                cout << tempName << endl;
+                                cout << tempName + to_string(j + 1) + ".xml" << endl;
+                                write_xml("xml/" + tempName + to_string(j + 1) + ".xml", pts);
                                 cout << "done" << endl;
                             }
                             
