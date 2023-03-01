@@ -239,8 +239,11 @@ int main()
     sf::RenderWindow window(sf::VideoMode(width, height), "Canvas");
     sf::Texture clearBtn;
     sf::Texture clearBtnPressed;
+    sf::Texture enterBtn;
+    sf::Texture enterBtnPressed;
     sf::Texture gestureExamples;
     sf::Sprite clearBtnSprite;
+    sf::Sprite enterBtnSprite;
     sf::Sprite gestureExamplesSprite;
     sf::Font outputFont;
     sf::Text inputText;
@@ -257,6 +260,14 @@ int main()
         std::cout << "failed to load clear_pressed.png";
     }
 
+    if (!enterBtn.loadFromFile("enter.png")) {
+        cout << "failed to load enter.png";
+    }
+
+    if (!enterBtnPressed.loadFromFile("enter_pressed.png")) {
+        cout << "failed to load enter_pressed.png";
+    }
+
     if (!outputFont.loadFromFile("Roboto-Black.ttf")) {
         std::cout << "failed to load Roboto-Black.ttf";
     }
@@ -267,6 +278,9 @@ int main()
 
     clearBtnSprite.setPosition(300, 400);
     clearBtnSprite.setTexture(clearBtn);
+
+    enterBtnSprite.setPosition(0, 400);
+    enterBtnSprite.setTexture(enterBtn);
 
     gestureExamplesSprite.setPosition(400, 50);
     gestureExamplesSprite.setTexture(gestureExamples);
@@ -327,6 +341,9 @@ int main()
                 // if pressed clear btn, do not draw
                 if (event.mouseButton.x >= 300 && event.mouseButton.y >= 400) {
                     clearBtnSprite.setTexture(clearBtnPressed);
+                }
+                else if (event.mouseButton.x <= 100 && event.mouseButton.y >= 400) {
+                    enterBtnSprite.setTexture(enterBtnPressed);
                 }
                 else {
                     //start new stroke
@@ -446,8 +463,11 @@ int main()
 
                     }
 
-                    randGestures.erase(randGestures.begin() + currGesture);
-                    currGesture = rand() % randGestures.size();
+                    
+                    if (randGestures.size() != 0) {
+                        randGestures.erase(randGestures.begin() + currGesture);
+                        currGesture = rand() % randGestures.size();
+                    }
                 }
             }
             else if (event.type == sf::Event::MouseButtonReleased) {
@@ -493,7 +513,10 @@ int main()
                 // if mouse btn released outside of clear btn, do not clear 
                 }
                 else if (clearBtnSprite.getTexture() == &clearBtnPressed && (event.mouseButton.x < 300 || event.mouseButton.y < 400)) {
-                    clearBtnSprite.setTexture(clearBtn);;
+                    clearBtnSprite.setTexture(clearBtn);
+                }
+                else if (enterBtnSprite.getTexture() == &enterBtnPressed && (event.mouseButton.x > 100 || event.mouseButton.y < 400)) {
+                    enterBtnSprite.setTexture(enterBtn);
                 }
                 // clear
                 else if (clearBtnSprite.getTexture() == &clearBtnPressed && event.mouseButton.x >= 300 && event.mouseButton.y >= 400) {
@@ -502,12 +525,110 @@ int main()
                     vertices.clear();
                     resampledVisualization.clear();
                 }
+                else if (enterBtnSprite.getTexture() == &enterBtnPressed && event.mouseButton.x <= 100 && event.mouseButton.y >= 400) {
+                    //collect points - write to xml here
+                    for (int i = 0; i < vertices.size(); i++) {
+                        shape.push_back(Point(vertices[i].position.x, vertices[i].position.y));
+                    }
+                    cout << "Curr: " << currGesture << endl;
+                    cout << "Size: " << randGestures.size() << endl;
+                    cout << "Gesture: " << randGestures[currGesture] << endl;
+                    userMap.addTemplate(randGestures[currGesture], shape);
+                    //userMap.printTemplateMap();
+                    //clear window points
+                    enterBtnSprite.setTexture(enterBtn);
+                    clearBtnSprite.setTexture(clearBtn);
+                    vertices.clear();
+                    resampledVisualization.clear();
+
+                    inputText.setString("Draw gesture: " + randGestures[currGesture]);
+
+                    numRecordings++;
+
+                    if (numRecordings == 160) { // user has drawn 10 examples of all 16 gestures
+                        // turn to xml, should be 160 just using 1 to test
+                        cout << "starting conversion" << endl;
+
+                        for (int i = 0; i < gestures.size(); i++) {
+                            vector<vector<Point>> temp = userMap.templates[gestures[i]]; // should be gestures[i]
+
+                            for (int j = 0; j < temp.size(); j++) {
+
+
+                                //pt.add("<xmlattr>.Name", randGestures[currGesture]);
+
+                                //ptree p;
+                                //p.clear();
+
+                                ptree pt;
+                                pt.clear();
+
+                                for (int k = 0; k < temp[j].size(); k++) {
+                                    ptree ptt;
+                                    ptt.clear();
+                                    //ptree pts;
+                                    ptt.add("<xmlattr>.X", temp[j][k].x);
+                                    ptt.add("<xmlattr>.Y", temp[j][k].y);
+                                    pt.add_child("Point", ptt);
+                                }
+
+                                string tempName = gestures[i];
+                                vector<string> tempNameResult;
+                                boost::split(tempNameResult, tempName, boost::is_any_of(" "));
+                                string name = "";
+
+                                if (tempNameResult.size() > 0) {
+                                    for (int l = 0; l < tempNameResult.size(); l++) {
+                                        if (l < tempNameResult.size() - 1) {
+                                            name += tempNameResult[l] + "_";
+                                        }
+                                        else {
+                                            name += tempNameResult[l];
+                                        }
+                                    }
+                                }
+                                else {
+                                    name = tempName;
+                                }
+
+                                if (j + 1 < 10) {
+                                    name += "0" + to_string(j + 1);
+                                }
+                                else {
+                                    name += to_string(j + 1);
+                                }
+
+                                //ptt.clear();
+                                //ptt.add("<xmlattr>.Name", gestures[i]);
+                                boost::property_tree::ptree pts;
+                                pts.clear();
+                                pt.put("<xmlattr>.Name", name);
+                                pts.add_child("Gesture", pt);
+
+
+
+
+
+                                cout << name << endl;
+                                cout << name + ".xml" << endl;
+                                write_xml("xml/" + name + ".xml", pts);
+                                cout << "done" << endl;
+                            }
+
+                        }
+                    }
+                    if (randGestures.size() != 0) {
+                        randGestures.erase(randGestures.begin() + currGesture);
+                        currGesture = rand() % randGestures.size();
+                    }
+                }
             }
             
         }
 
         window.clear(sf::Color(255,255,255));
         window.draw(clearBtnSprite);
+        window.draw(enterBtnSprite);
         window.draw(gestureExamplesSprite);
         window.draw(inputText);
         window.draw(instructions);
