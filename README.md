@@ -17,8 +17,13 @@ Install:
 - add a the file directory for this package: downloads (or wherever boost was extracted)\boost_1_81_0\boost_81_0\boost
 
 Working on Visual Studio 2019 with SFML for VS C++ 15
+## Part 4
+### Write gesture files
+### Prompt for specific samples
+### Recruit 6 people
+### Submit full dataset
 
-# Part 3
+## Part 3
 ### Read in Dataset
 main.cpp - Lines 35-37 & parseXML() function - This function parses the XML logs folder using the boost library to fill in a vector of TemplateMap objects. It navigates between the file directory and subdirectories in order to get the data from all 10 users for every gesture. Each user has their own TemplateMap, and their XML data is stored within the TemplateMap.
 ### Connect to Recognizer
