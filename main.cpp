@@ -459,14 +459,14 @@ int main()
                             }
                             
                         }
-                        
+                        exit(0);
 
                     }
-
-                    
-                    if (randGestures.size() != 0) {
+                    else {
                         randGestures.erase(randGestures.begin() + currGesture);
-                        currGesture = rand() % randGestures.size();
+                        if (randGestures.size() != 0) {
+                            currGesture = rand() % randGestures.size();
+                        }
                     }
                 }
             }
@@ -616,11 +616,16 @@ int main()
                             }
 
                         }
+                        exit(0);
                     }
-                    if (randGestures.size() != 0) {
+                    else {
                         randGestures.erase(randGestures.begin() + currGesture);
-                        currGesture = rand() % randGestures.size();
+                        if (randGestures.size() != 0) {
+                            currGesture = rand() % randGestures.size();
+                        }
                     }
+
+                    
                 }
             }
             
