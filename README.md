@@ -19,9 +19,13 @@ Install:
 Working on Visual Studio 2019 with SFML for VS C++ 15
 ## Part 4
 ### Write gesture files
+main.cpp - Lines 391-615 - Once the user has completed drawing 160 gestures (10 samples of each 16 gestures), loop through each gesture and each sample and write each point to a point tree. Then, all points are written to an xml file with the appropriate name indicating the gesture type and number. There will be an xml file for each gesture the user drew.
 ### Prompt for specific samples
+main.cpp - Lines 247-639 - The image of the 16 gesture examples is displayed to the left of the drawing canvas. A random gesture is chosen and printed at the top of the canvas. The user will be requested to draw the random gestures and that gesture will be recorded for all 10 samples of all 16 gestures.
 ### Recruit 6 people
+Each team member tracked down 2 people to draw 160 gestures. The samples were collected in the "xml" directory. The consent forms are in the "consent" directory.
 ### Submit full dataset
+All sample sets collected from users are in the folder titled "xml", with a pilot set titled "s01 (pilot)", the rest collected from the 6 users are titled "s02" to "s07".
 
 ## Part 3
 ### Read in Dataset
