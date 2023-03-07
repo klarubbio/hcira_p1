@@ -41,7 +41,7 @@ int main()
         in(std::cin), in(), std::cout << (_1 * 3) << " ");*/
 
         // ============== REMOVE COMMENT BLOCK FOR PART 3 =============
-    /*
+    
         vector<TemplateMap> rawUserData;
         parseXML(rawUserData);
         //FILL FROM XML HERE
@@ -172,6 +172,8 @@ int main()
 
                         string recognizedAs;
 
+                        
+                        /*
                         for (int j = 0; j < contentsOfSet.size(); j++) {
                             vector<string> parts;
                             string gesture = contentsOfSet[j];
@@ -183,11 +185,14 @@ int main()
                                 log.push_back(recognizedAs); // log what gesture was recognized as
                                 break;
                             }
-                        }
+                        }*/
 
                         string nBestString = "{";
                         int j = 0;
                         for (auto itr = nBest.rbegin(); itr != nBest.rend(); itr++) {
+                            if (j == 0) {
+                                log.push_back(itr->second);
+                            }
                             if (j < 50) {
                                 nBestString += itr->second;
                                 nBestString += "|";
@@ -234,11 +239,11 @@ int main()
         return 0;
     }
 
-    */
+    
         //fillTemplateMap(templateMap, preprocessedTemplates);
         //templateMap.printTemplateMap();
 
-
+/*
     int width = 800;
     int height = 450;
 
@@ -516,7 +521,7 @@ int main()
                 //}
 
                 // if mouse btn released outside of clear btn, do not clear 
-                }
+/*                }
                 else if (clearBtnSprite.getTexture() == &clearBtnPressed && (event.mouseButton.x < 300 || event.mouseButton.y < 400)) {
                     clearBtnSprite.setTexture(clearBtn);
                 }
@@ -661,5 +666,5 @@ int main()
     return 0;
 
 
-}
+}*/
     
