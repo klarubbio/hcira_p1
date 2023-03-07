@@ -29,6 +29,9 @@ using namespace std;
 int main()
 {
     using boost::property_tree::ptree;  
+    unsigned int NUM_USERS = 10;
+    unsigned int SIZE_BOX = 400;
+
     /*
     // boost sanity check (test this after installing boost library by typing "1 2 3")
     using namespace boost::lambda;
@@ -46,7 +49,7 @@ int main()
         // Preprocess points from XML file and save to preprocessedTemplates data structure
         vector<TemplateMap> preprocessedUserData;
         //for each user
-        for (unsigned int i = 0; i < 1; i++) {
+        for (unsigned int i = 0; i < NUM_USERS; i++) {
             //for each gesture type in map
             TemplateMap processed;
             for (auto itr = rawUserData[i].templates.begin(); itr != rawUserData[i].templates.end(); itr++) {
@@ -73,9 +76,11 @@ int main()
         vector<vector<double>> recoScores(rawUserData.size(), vector<double>(rawUserData[0].templates.size(), 0));
         vector<pair<long, long>> userAvg;
         vector<vector<string>> outputCSV;
+        unsigned int totalCorrect = 0;
+        unsigned int totalLogs = 0;
 
-        // for each user U = 1 to 10
-        for (unsigned int U = 0; U < 1; U++) {
+        // for each user U = 0 to NUM_USERS
+        for (unsigned int U = 0; U < NUM_USERS; U++) {
             userAvg.push_back(pair<long, long>(0, 0));
 
             // for each example E = 1 to 9
@@ -85,6 +90,7 @@ int main()
                     TemplateMap chosenGestureTemplates;
                     vector<pair<vector<Point>, int>> candidates;
                     string setContents = "{";
+                    unsigned int setSize = 0;
                     vector<string> namesInOrder;
 
                     // for each gesture type G
@@ -101,8 +107,10 @@ int main()
                             if (!alreadyChose[randInd]) {
                                 if (j < E) {
                                     chosenGestureTemplates.addTemplate(G->first, gestures[randInd]);
-                                    setContents += "s0" + to_string(U + 2) + "-" + G->first + "-" + to_string(randInd) + " ";
-                                    namesInOrder.push_back("s0" + to_string(U + 2) + "-" + G->first + "-" + to_string(randInd));
+                                    setContents += "s0" + to_string(U + 2) + "-" + G->first + "-" + to_string(randInd + 1) + " ";
+                                    namesInOrder.push_back("s0" + to_string(U + 2) + "-" + G->first + "-" + to_string(randInd + 1));
+                                    alreadyChose[randInd] = true;
+                                    setSize++;
 
                                 }
                                 else {
@@ -119,14 +127,14 @@ int main()
                     }
 
                     int g = 0;
-                    // for each candidate T (templates[E]) recognize with E (templates[0 to E])
+                    // for each candidate T (templates[E]) recognize with G*E (templates[0 to E])
                     for (auto G = rawUserData[U].templates.begin(); G != rawUserData[U].templates.end(); G++) {
                         // prepare a vector of strings for csv output
                         map<double, string> nBest;
                         string participant = "s0" + to_string(U + 2) + "-";
                         string templateName = G->first;
 
-                        pair<string, double> result = Recognize(candidates[g].first, chosenGestureTemplates, nBest, namesInOrder);
+                        pair<string, double> result = Recognize(candidates[g].first, chosenGestureTemplates, SIZE_BOX, nBest, namesInOrder);
                         //cout << "n best size " << nBest.size() << endl;
 
                         vector<string> log;
@@ -134,9 +142,9 @@ int main()
                         log.push_back(G->first); // log gesture
                         log.push_back(to_string(i)); // log iteration
                         log.push_back(to_string(E)); // log num examples
-                        log.push_back(to_string(rawUserData.size())); // log size of training set
+                        log.push_back(to_string(setSize)); // log size of training set
                         log.push_back(setContents.substr(0, setContents.size() - 1) + "}"); // log the contents of the set
-                        log.push_back("s0" + to_string(U + 2) + "-" + G->first + to_string(candidates[g].second)); // log the candidate
+                        log.push_back("s0" + to_string(U + 2) + "-" + G->first + '-' + to_string(candidates[g].second + 1)); // log the candidate
                         log.push_back(result.first); // log the result of the recognizer
 
                         // reco score for each U,G += 1
@@ -144,6 +152,7 @@ int main()
                             recoScores[U][g]++;
                             userAvg[U].first++;
                             log.push_back("1"); // log success
+                            totalCorrect++;
 
                         } else {
                             userAvg[U].second++;
@@ -152,8 +161,9 @@ int main()
                         }
 
                         log.push_back(to_string(result.second)); // log recognizer score
+                        totalLogs++;
 
-                // CODE FOR ADDING NAME OF GESTURE RECOGNIZED
+                        // CODE FOR ADDING NAME OF GESTURE RECOGNIZED
 
                         vector<string> contentsOfSet;
                         string s = setContents.substr(1, contentsOfSet.size()-1);
@@ -162,13 +172,13 @@ int main()
 
                         string recognizedAs;
 
-                        for (int i = 0; i < contentsOfSet.size(); i++) {
+                        for (int j = 0; j < contentsOfSet.size(); j++) {
                             vector<string> parts;
-                            string gesture = contentsOfSet[i];
+                            string gesture = contentsOfSet[j];
                             boost::split(parts, gesture, boost::is_any_of("-"), boost::token_compress_on);
-                            string j = parts[1];
-                            if (j == result.first) {
-                                recognizedAs = "s0" + to_string(U+2) + "-" + j + "-" + parts[2];
+                            string k = parts[1];
+                            if (k == result.first) {
+                                recognizedAs = "s0" + to_string(U+2) + "-" + k + "-" + parts[2];
                                 //cout << "R as: " << recognizedAs << endl;
                                 log.push_back(recognizedAs); // log what gesture was recognized as
                                 break;
@@ -176,15 +186,15 @@ int main()
                         }
 
                         string nBestString = "{";
-                        int i = 0;
-                        for (auto itr = nBest.begin(); itr != nBest.end(); itr++) {
-                            if (i < 50) {
+                        int j = 0;
+                        for (auto itr = nBest.rbegin(); itr != nBest.rend(); itr++) {
+                            if (j < 50) {
                                 nBestString += itr->second;
                                 nBestString += "|";
                                 nBestString += to_string(itr->first);
                                 nBestString += "|";
                             }
-                            i++;
+                            j++;
                         }
                         nBestString += "}";
                         log.push_back(nBestString);
@@ -196,22 +206,18 @@ int main()
                     }
                 }
 
-                // reco score for each U,G /= 10
+                // reco score for each U,G /= NUM_USERS
                 for (unsigned int i = 0; i < rawUserData[U].templates.size(); i++) {
-                    recoScores[U][i] /= 10.0;
+                    recoScores[U][i] /= (double) NUM_USERS;
                 }
             }
-
-            double average = ((double)userAvg[U].first) / (userAvg[U].first + userAvg[U].second);
-            cout << "User " << U + 1 << " accuracy: " << average << endl;
-            vector<string> empty;
-            //empty line
-            outputCSV.push_back(empty);
-            vector<string> final;
-            final.push_back("TotalAvgAccuracy");
-            final.push_back(to_string(average));
-            outputCSV.push_back(final);
         }
+
+        vector<string> final;
+        final.push_back("TotalAvgAccuracy");
+        final.push_back(to_string((double)totalCorrect / (double)totalLogs));
+        outputCSV.push_back(vector<string>());
+        outputCSV.push_back(final);
 
         // write csv file
         ofstream myfile;
@@ -228,11 +234,11 @@ int main()
         return 0;
     }
 
-*/
-	//fillTemplateMap(templateMap, preprocessedTemplates);
-    //templateMap.printTemplateMap();
-    
-    
+    */
+        //fillTemplateMap(templateMap, preprocessedTemplates);
+        //templateMap.printTemplateMap();
+
+
     int width = 800;
     int height = 450;
 
@@ -305,7 +311,7 @@ int main()
     bool drawing = false;
 
 
-    vector<string> gestures = { "arrow", "caret", "check", "circle", "delete mark", "left curly brace", "left square bracket", "pigtail", "rectangle", "right curly brace", "right square bracket", "star", "triangle", "v", "x", "zig-zag"};
+    vector<string> gestures = { "arrow", "caret", "check", "circle", "delete mark", "left curly brace", "left square bracket", "pigtail", "rectangle", "right curly brace", "right square bracket", "star", "triangle", "v", "x", "zig-zag" };
     vector<string> randGestures;
     //setup for gesture prompts
     for (int i = 0; i < 10; i++) {
@@ -323,7 +329,7 @@ int main()
 
     while (window.isOpen())
     {
-        
+
 
         inputText.setString("Draw gesture: " + randGestures[currGesture]);
         instructions.setString("Draw the prompted gesture. Press enter to proceed to the next gesture, or press clear to try again.");
@@ -347,7 +353,7 @@ int main()
                 }
                 else {
                     //start new stroke
-                    
+
                     vertices.clear();
                     drawing = true;
                     last = window.mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y });
@@ -383,7 +389,7 @@ int main()
                     clearBtnSprite.setTexture(clearBtn);
                     vertices.clear();
                     resampledVisualization.clear();
-                    
+
                     inputText.setString("Draw gesture: " + randGestures[currGesture]);
 
                     numRecordings++;
@@ -391,13 +397,13 @@ int main()
                     if (numRecordings == 160) { // user has drawn 10 examples of all 16 gestures
                         // turn to xml, should be 160 just using 1 to test
                         cout << "starting conversion" << endl;
-                        
+
                         for (int i = 0; i < gestures.size(); i++) {
                             vector<vector<Point>> temp = userMap.templates[gestures[i]]; // should be gestures[i]
-                            
+
                             for (int j = 0; j < temp.size(); j++) {
-                                
-                                
+
+
                                 //pt.add("<xmlattr>.Name", randGestures[currGesture]);
 
                                 //ptree p;
@@ -407,12 +413,12 @@ int main()
                                 pt.clear();
 
                                 for (int k = 0; k < temp[j].size(); k++) {
-                                     ptree ptt;
-                                     ptt.clear();
-                                     //ptree pts;
-                                     ptt.add("<xmlattr>.X", temp[j][k].x);
-                                     ptt.add("<xmlattr>.Y", temp[j][k].y);
-                                     pt.add_child("Point", ptt);
+                                    ptree ptt;
+                                    ptt.clear();
+                                    //ptree pts;
+                                    ptt.add("<xmlattr>.X", temp[j][k].x);
+                                    ptt.add("<xmlattr>.Y", temp[j][k].y);
+                                    pt.add_child("Point", ptt);
                                 }
 
                                 string tempName = gestures[i];
@@ -440,7 +446,7 @@ int main()
                                 else {
                                     name += to_string(j + 1);
                                 }
-                                
+
                                 //ptt.clear();
                                 //ptt.add("<xmlattr>.Name", gestures[i]);
                                 boost::property_tree::ptree pts;
@@ -448,16 +454,16 @@ int main()
                                 pt.put("<xmlattr>.Name", name);
                                 pts.add_child("Gesture", pt);
 
-                                
 
-                                
-                                
+
+
+
                                 cout << name << endl;
                                 cout << name + ".xml" << endl;
                                 write_xml("xml/" + name + ".xml", pts);
                                 cout << "done" << endl;
                             }
-                            
+
                         }
                         exit(0);
 
@@ -472,8 +478,8 @@ int main()
             }
             else if (event.type == sf::Event::MouseButtonReleased) {
                 if (drawing) {
-                    
-                    
+
+
                     drawing = false;
                     /*Point origin = Point(0, 0);
                     for (int i = 0; i < vertices.size(); i++) {
@@ -481,9 +487,8 @@ int main()
                         //cout << "Test: Distance from origin: " << shape.at(i).distance(origin) << endl;
                         //cout << vertices[i].position.x << " " << vertices[i].position.y << endl;
                     }
-
                     ============ RECOGNIZING DATA ========= commented out for part 4
-                    
+
                     //Resampling function calls
                     vector<Point> resampled;
                     cout << "Original points: " << shape.size() << endl;
@@ -520,7 +525,7 @@ int main()
                 }
                 // clear
                 else if (clearBtnSprite.getTexture() == &clearBtnPressed && event.mouseButton.x >= 300 && event.mouseButton.y >= 400) {
-                    
+
                     clearBtnSprite.setTexture(clearBtn);
                     vertices.clear();
                     resampledVisualization.clear();
@@ -625,13 +630,13 @@ int main()
                         }
                     }
 
-                    
+
                 }
             }
-            
+
         }
 
-        window.clear(sf::Color(255,255,255));
+        window.clear(sf::Color(255, 255, 255));
         window.draw(clearBtnSprite);
         window.draw(enterBtnSprite);
         window.draw(gestureExamplesSprite);
@@ -644,7 +649,7 @@ int main()
             shape.clear();
             window.draw(&vertices[0], vertices.size() - 1, sf::LineStrip);
         }
-        
+
         //comment out when not debugging
         if (!resampledVisualization.empty()) {
             window.draw(&resampledVisualization[0], resampledVisualization.size() - 1, sf::Points);
@@ -655,5 +660,6 @@ int main()
 
     return 0;
 
-    
+
 }
+    

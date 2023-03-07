@@ -147,7 +147,7 @@ vector<Point> TranslateTo(vector<Point> points, Point point) {
 	return newPoints;
 }
 
-pair<string, double> Recognize(vector<Point>& points, TemplateMap templates, map<double, string>& nBest, vector<string> inOrder) {
+pair<string, double> Recognize(vector<Point>& points, TemplateMap templates, unsigned int size, map<double, string>& nBest, vector<string> inOrder) {
 	double best = numeric_limits<double>::infinity();
 	string bestName = "";
 
@@ -167,15 +167,15 @@ pair<string, double> Recognize(vector<Point>& points, TemplateMap templates, map
 				bestName = itr->first;
 			}
 			if (inOrder.size() > counter) {
-				distance = (distance / (0.5 * sqrt(pow(400, 2) + pow(400, 2))));
-				nBest[distance] = inOrder[counter];
+				distance = distance / (0.5 * sqrt(pow(size, 2) + pow(size, 2)));
+				nBest[1 - distance] = inOrder[counter];
 			}
 			counter++;
 		}
 		
 	}
 
-	double score = (best / (0.5 * sqrt(pow(400, 2) + pow(400, 2))));
+	double score = 1 - (best / (0.5 * sqrt(pow(size, 2) + pow(size, 2))));
 	//return best score and corresponding template name
 	return make_pair(bestName, score);
 }
