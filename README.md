@@ -17,6 +17,14 @@ Install:
 - add a the file directory for this package: downloads (or wherever boost was extracted)\boost_1_81_0\boost_81_0\boost
 
 Working on Visual Studio 2019 with SFML for VS C++ 15
+## Part 5
+### Run an offline recognition test
+main.cpp - Lines 45-127 and ParseXML.cpp - entire file - The same recognition test as what was previously conducted in part 3 is performed on the user data collected in part 4. Small edits have been made to correct mistakes in the previous log file, including fixing the TotalSizeOfTrainingSet column, reversing scores to show the highest scores being the most similar shapes, and ensuring that the template and training set are not updated multiple times.
+### Output the result
+main.cpp - Lines 131-225 - This code outputs the results of the recognition test, as was done in part 3. 
+### Analyze dataset using GHoST
+### Extract user articulation insights
+
 ## Part 4
 ### Write gesture files
 main.cpp - Lines 391-615 - Once the user has completed drawing 160 gestures (10 samples of each 16 gestures), loop through each gesture and each sample and write each point to a point tree. Then, all points are written to an xml file with the appropriate name indicating the gesture type and number. There will be an xml file for each gesture the user drew.
