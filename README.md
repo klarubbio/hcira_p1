@@ -23,7 +23,11 @@ main.cpp - Lines 45-127 and ParseXML.cpp - entire file - The same recognition te
 ### Output the result
 main.cpp - Lines 131-225 - This code outputs the results of the recognition test, as was done in part 3. 
 ### Analyze dataset using GHoST
+The user data was analyzed using the GHoST tool (see source below). The resulting heatmap showing all participants' gestures is the file named "heatmap_all_users.bmp" in the gesture_heatmaps folder. Also in this folder, the corresponding feature data is in the file allGesturesData.csv, and the heatmaps for individual users are also included. 
 ### Extract user articulation insights
+The heatmap can be used to infer user behavior, knowing that warmer colors indicate higher variability, and cooler colors indicate lower variability. One insight could be that for some shapes there is a lower magnitude of variability around the points of inflection in a shape, that is, places where the user must change the direction of their drawing. The best examples are the point of the caret and v, which indicate visibly lower magnitude of points than the rest of the shape. The same could be said for the curly braces, which indicate lower variability around the bowed-out parts. For a shape with pretty high variability, the triangle, the corner on the right seems to be one of the most consistent parts of the shape. The circle, which has no sharp change in direction may support this insight, as it has consistent variability throughout. This insight could be explained by the user having to slow down their drawing around an inflection point, causing them to be more careful about their movements. 
+
+An additional insight is that the start and end points of each gesture generally had the highest magnitude of variability, meaning the most warm colors, with some exceptions. This is very apparent with the brackets, caret, v, zigzag and braces, where variability is low except for at the endpoints. This could be due to differences in users' interpretations of the shapes or previous experience drawing these shapes. One shape where this is not prevalent is the circle. This could be explained by most participants probably drawing a circle in the exact same way. The rotation of the shapes to overlay them would not affect this shape, because it is omnidirectionally identical.
 
 ## Part 4
 ### Write gesture files
