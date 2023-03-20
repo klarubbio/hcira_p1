@@ -23,7 +23,7 @@ const ptree& empty_ptree() {
 void parseXML(vector<TemplateMap>& userTemplates) {
 	vector<string> users = { "s02", "s03", "s04", "s05", "s06", "s07", "s08", "s09", "s10", "s11" };
 	vector<string> speeds = { "slow", "medium", "fast" };
-	vector<string> gestures = { "arrow", "caret", "check", "circle", "delete_mark", "left_curly_brace", "left_sq_bracket", "pigtail", "question_mark", "rectangle", "right_curly_brace", "right_sq_bracket", "star", "triangle", "v", "x" };
+	vector<string> gestures = { "arrow", "caret", "check", "circle", "delete_mark", "left_curly_brace", "left_square_bracket", "pigtail", "zig-zag", "rectangle", "right_curly_brace", "right_square_bracket", "star", "triangle", "v", "x" };
 
 	//vector<TemplateMap> userTemplates;
 
@@ -40,8 +40,8 @@ void parseXML(vector<TemplateMap>& userTemplates) {
 
 	// for loop for users
   // ERROR in file directory, need help here
-	string currentDirectory = "xml/xml_logs/"; // current directory where this folder is stored
-	for (int i = 2; i < 12; i++) {
+	string currentDirectory = "xml/"; // current directory where this folder is stored
+	for (int i = 2; i < 8; i++) {
 		string userDirectory = currentDirectory;
 		if (i < 10) {
 			userDirectory = userDirectory + "s0" + std::to_string(i);
@@ -49,9 +49,10 @@ void parseXML(vector<TemplateMap>& userTemplates) {
 		else {
 			userDirectory = userDirectory + "s" + std::to_string(i);
 		}
-		string speed = speeds[0]; // slow, can choose whataver we like
-		string templateDirectory = userDirectory + "/" + speed;
+		//string speed = speeds[0]; // slow, can choose whataver we like
+		//string templateDirectory = userDirectory + "/" + speed;
 		//cout << templateDirectory << endl;
+		string templateDirectory = userDirectory;
 
 		TemplateMap currentUserMap;
 
@@ -66,7 +67,7 @@ void parseXML(vector<TemplateMap>& userTemplates) {
 				else {
 					gestureDirectory = gestureDirectory + std::to_string(k) + ".xml";
 				}
-				//cout << gestureDirectory << endl;
+				cout << gestureDirectory << endl;
 				vector<Point> curr_template = _template;
 
 

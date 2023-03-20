@@ -29,7 +29,7 @@ using namespace std;
 int main()
 {
     using boost::property_tree::ptree;  
-    unsigned int NUM_USERS = 10;
+    unsigned int NUM_USERS = 6;
     unsigned int SIZE_BOX = 400;
 
     /*
