@@ -30,7 +30,7 @@ int main()
 {
     using boost::property_tree::ptree;  
     unsigned int NUM_USERS = 6;
-    unsigned int SIZE_BOX = 400;
+    unsigned int SIZE_BOX = 1500;
 
     /*
     // boost sanity check (test this after installing boost library by typing "1 2 3")
@@ -45,7 +45,7 @@ int main()
         vector<TemplateMap> rawUserData;
         parseXML(rawUserData);
         //FILL FROM XML HERE
-
+        cout << "Parsed XML" << endl;
         // Preprocess points from XML file and save to preprocessedTemplates data structure
         vector<TemplateMap> preprocessedUserData;
         //for each user
@@ -71,6 +71,8 @@ int main()
             }
             preprocessedUserData.push_back(processed);
         }
+
+        cout << "Preprocessed all data" << endl;
 
         // LOOP OVER DATASET, OUTPUT THE RESULT
         vector<vector<double>> recoScores(rawUserData.size(), vector<double>(rawUserData[0].templates.size(), 0));
@@ -218,6 +220,8 @@ int main()
             }
         }
 
+        cout << "Total Accuracy " << to_string((double)totalCorrect / (double)totalLogs) << endl;
+
         vector<string> final;
         final.push_back("TotalAvgAccuracy");
         final.push_back(to_string((double)totalCorrect / (double)totalLogs));
@@ -235,6 +239,8 @@ int main()
             myfile << "\n";
         }
         myfile.close();
+
+        cout << "File Written" << endl;
 
         return 0;
     }
