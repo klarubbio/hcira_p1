@@ -21,7 +21,7 @@ Rectangle BoundingBox(vector<Point> points); // creates a box within x and y min
 vector<Point> ScaleTo(vector<Point> points, double size);
 Point Centroid(vector<Point> points); // finds centroid of shape
 vector<Point> TranslateTo(vector<Point> points, Point point);
-pair<string, double> Recognize(vector<Point>& points, TemplateMap templates, unsigned int size, map<double, string>& nBest, vector<string> inOrder);
+pair<string, double> Recognize(vector<Point>& points, TemplateMap templates);
 double DistanceAtBestAngle(vector<Point>& points, vector<Point>& compare, double thetaA, double thetaB, double thetaDelta);
 double DistanceAtAngle(vector<Point>& points, vector<Point>& compare, double theta);
 double PathDistance(vector<Point>& points, vector<Point>& compare);

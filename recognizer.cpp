@@ -147,7 +147,7 @@ vector<Point> TranslateTo(vector<Point> points, Point point) {
 	return newPoints;
 }
 
-pair<string, double> Recognize(vector<Point>& points, TemplateMap templates, unsigned int size, map<double, string>& nBest, vector<string> inOrder) {
+pair<string, double> Recognize(vector<Point>& points, TemplateMap templates) {
 	double best = numeric_limits<double>::infinity();
 	string bestName = "";
 
@@ -155,27 +155,19 @@ pair<string, double> Recognize(vector<Point>& points, TemplateMap templates, uns
 	double theta = 45.0;
 	double thetaDelta = 2.0;
 
-	int counter = 0;
-
 	//Look through all best distances and select lowest
 	for (auto itr = templates.templates.begin(); itr != templates.templates.end(); itr++) {
 		for (int i = 0; i < itr->second.size(); i++) {
 			double distance = DistanceAtBestAngle(points, itr->second[i], -theta, theta, thetaDelta);
-			
+
 			if (distance < best) {
 				best = distance;
 				bestName = itr->first;
 			}
-			if (inOrder.size() > counter) {
-				distance = distance / (0.5 * sqrt(pow(size, 2) + pow(size, 2)));
-				nBest[1 - distance] = inOrder[counter];
-			}
-			counter++;
 		}
-		
 	}
 
-	double score = 1 - (best / (0.5 * sqrt(pow(size, 2) + pow(size, 2))));
+	double score = 1 - (best / 0.5 * (sqrt(pow(400, 2) + pow(400, 2))));
 	//return best score and corresponding template name
 	return make_pair(bestName, score);
 }
