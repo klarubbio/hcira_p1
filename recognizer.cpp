@@ -167,7 +167,7 @@ pair<string, double> Recognize(vector<Point>& points, TemplateMap templates) {
 		}
 	}
 
-	double score = 1 - (best / 0.5 * (sqrt(pow(400, 2) + pow(400, 2))));
+	double score = 1 - (best / (0.5 * sqrt(pow(1500, 2) + pow(1500, 2))));
 	//return best score and corresponding template name
 	return make_pair(bestName, score);
 }

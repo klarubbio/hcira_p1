@@ -16,3 +16,4 @@ using boost::property_tree::ptree;
 using namespace std;
 
 void parseXML(vector<TemplateMap>& userTemplates);
+void parseOneXML(vector<Point>& points, string path);

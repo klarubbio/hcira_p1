@@ -20,6 +20,32 @@ const ptree& empty_ptree() {
 	return t;
 }
 
+void parseOneXML(vector<Point>& points, string path) {
+	ptree pt;
+	read_xml(path, pt);
+	const ptree& formats = pt.get_child("Gesture", empty_ptree());
+
+	BOOST_FOREACH(const ptree::value_type & child, formats) {
+		const ptree& attributes = child.second.get_child("<xmlattr>", empty_ptree());
+		int i = 0;
+		Point p = Point(0, 0);
+		BOOST_FOREACH(const ptree::value_type & value_type, attributes) {
+			//cout << value_type.second.data() << endl; 
+			if (i == 1) {
+				// x value
+				p.x = stod(value_type.second.data());
+			}
+			else if (i == 2) {
+				// y value
+				p.y = stod(value_type.second.data());
+			}
+
+			i++;
+		}
+		points.push_back(p);
+	}
+}
+
 void parseXML(vector<TemplateMap>& userTemplates) {
 	vector<string> users = { "s02", "s03", "s04", "s05", "s06", "s07", "s08", "s09", "s10", "s11" };
 	vector<string> speeds = { "slow", "medium", "fast" };

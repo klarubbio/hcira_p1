@@ -5,7 +5,7 @@ Spring 2023
 */
 
 
-#include <SFML/Graphics.hpp>
+//#include <SFML/Graphics.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/algorithm/string/classification.hpp> // Include boost::for is_any_of
 #include <boost/algorithm/string/split.hpp> // Include for boost::split
@@ -44,19 +44,35 @@ int main() {
             rotateToZero(resampled, 64, rotated);
             //Scaling & translation function calls
             vector<Point> scaled;
-            scaled = ScaleTo(rotated, 400);
+            scaled = ScaleTo(rotated, 1500);
             vector<Point> translated;
-            translated = TranslateTo(scaled, Point(200, 200));
+            translated = TranslateTo(scaled, Point(750, 750));
             //Add the template to the templatemap for the current user
             processed.addTemplate(itr->first, translated);
         }
     }
 
-    string test = "arrow";
-    vector<Point>& points = processed.templates[test].at(0);
-    pair<string, double> result = Recognize(points, processed);
+    //REPLACE WITH DIR OF FILE TO TEST
+    string testPath = "xml_eyes/s02/arrow01.xml";
+    vector<Point> points;
+    parseOneXML(points, testPath);
 
-    cout << "Tested with: " << test << endl;
+    //Process test points
+    vector<Point> resampled;
+    resample(points, 64, resampled);
+    //Rotation function calls
+    vector<Point> rotated;
+    rotateToZero(resampled, 64, rotated);
+    //Scaling & translation function calls
+    vector<Point> scaled;
+    scaled = ScaleTo(rotated, 1500);
+    vector<Point> translated;
+    translated = TranslateTo(scaled, Point(750, 750));
+
+    //Perform recog
+    pair<string, double> result = Recognize(translated, processed);
+
+    cout << "Tested with: " << testPath << endl;
     cout << "Got:         " << result.first << endl;
     return 0;
 }
