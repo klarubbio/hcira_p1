@@ -62,9 +62,9 @@ int main()
                     rotateToZero(resampled, 64, rotated);
                     //Scaling & translation function calls
                     vector<Point> scaled;
-                    scaled = ScaleTo(rotated, 400);
+                    scaled = ScaleTo(rotated, 1500);
                     vector<Point> translated;
-                    translated = TranslateTo(scaled, Point(200, 200));
+                    translated = TranslateTo(scaled, Point(750, 750));
                     //Add the template to the templatemap for the current user
                     processed.addTemplate(itr->first, translated);
                 }
